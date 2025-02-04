@@ -2,7 +2,7 @@
 
 # Consensus Learning with LLMs
 
-This repository offers a Python implementation of a single-mode multi-model Consensus Learning (CL) framework. 
+This repository offers a Python implementation of a single-node multi-model Consensus Learning (CL) framework. 
 CL is a decentralised ensemble learning paradigm introduced in [2402.16157](https://arxiv.org/abs/2402.16157).
 The current implementation is a centralised version of CL specialized for Large Language Models (LLMs), done through OpenAI's [OpenRouter](https://openrouter.ai/docs/quick-start).
 This provides access to more than 300 models through a unique interface.
@@ -22,3 +22,5 @@ uv run ruff check
 ```
 
 ## OpenAI API Key
+
+Generate an [OpenRouter API key](https://openrouter.ai/settings/keys) and add it to the `env` variables.

@@ -12,7 +12,7 @@ class OpenRouterClient(BaseClient):
     def get_available_models(self) -> dict:
         """
         List available models.
-        
+
         API Reference: https://openrouter.ai/docs/api-reference/list-available-models
         :return: A dictionary containing the list of available models.
         """
@@ -21,7 +21,7 @@ class OpenRouterClient(BaseClient):
 
     def get_model_endpoints(self, author: str, slug: str) -> dict:
         """List endpoints for a specific model.
-        
+
         API Reference: https://openrouter.ai/docs/api-reference/list-endpoints-for-a-model
         :param author: The model author.
         :param slug: The model slug.
@@ -33,7 +33,7 @@ class OpenRouterClient(BaseClient):
     def get_credits(self) -> dict:
         """
         Retrieve the available credits.
-        
+
         API Reference: https://openrouter.ai/docs/api-reference/credits
         :return: A dictionary containing the credits information.
         """

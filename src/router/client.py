@@ -1,12 +1,18 @@
 from src.router.base_client import BaseClient
 
-
 class OpenRouterClient(BaseClient):
     """Client to interact with the OpenRouter API."""
 
-    def __init__(self, base_url: str, api_key: str | None = None) -> None:
-        """Initialize the OpenRouter client."""
+    def __init__(self, api_key: str | None = None, base_url: str | None = None) -> None:
+        """
+        Initialize the OpenRouter client.
 
+        The base URL is set to the OpenRouter API endpoint by default, but can be overridden.
+        :param api_key: Optional API key for authentication.
+        :param base_url: Optional custom base URL. Defaults to "https://openrouter.ai/api/v1"
+        """
+        if base_url is None:
+            base_url = "https://openrouter.ai/api/v1"
         super().__init__(base_url, api_key)
 
     def get_available_models(self) -> dict:
@@ -20,7 +26,8 @@ class OpenRouterClient(BaseClient):
         return self._get(endpoint)
 
     def get_model_endpoints(self, author: str, slug: str) -> dict:
-        """List endpoints for a specific model.
+        """
+        List endpoints for a specific model.
 
         API Reference: https://openrouter.ai/docs/api-reference/list-endpoints-for-a-model
         :param author: The model author.

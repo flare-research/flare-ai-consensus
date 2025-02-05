@@ -27,3 +27,14 @@ uv run ruff check
 ## OpenAI API Key
 
 Generate an [OpenRouter API key](https://openrouter.ai/settings/keys) and add it to the `env` variables.
+You can check your available credits running:
+
+```bash
+uv run python -m tests.credits
+```
+
+You can create a `models.json` file with all supported models, saved in a new `data` folder by running:
+
+```bash
+uv run python -m tests.models
+```

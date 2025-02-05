@@ -12,6 +12,7 @@ load_dotenv()
 class Config:
     open_router_base_url: str
     open_router_api_key: str
+    data_path: Path
 
 
 def load_env_var(var_name: str) -> str:
@@ -30,4 +31,5 @@ def create_path(folder_name: str) -> Path:
 config = Config(
     open_router_base_url=load_env_var("OPENROUTER_BASE_URL"),
     open_router_api_key=load_env_var("OPENROUTER_API_KEY"),
+    data_path=create_path("data"),
 )

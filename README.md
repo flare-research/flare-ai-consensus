@@ -33,8 +33,10 @@ You can check your available credits running:
 uv run python -m tests.credits
 ```
 
-You can create a `models.json` file with all supported models, saved in a new `data` folder by running:
+You can obtain a list of all models, and a separate list of all free models supported by OpenRouter by running:
 
 ```bash
 uv run python -m tests.models
 ```
+
+This will generate two `json` files in a data folder within the root directory.

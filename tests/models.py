@@ -3,6 +3,8 @@ from pathlib import Path
 
 from src.config import config
 from src.router.client import OpenRouterClient
+from src.utils.saving import save_json
+
 
 def get_models(client: OpenRouterClient) -> dict:
     """List all available models.
@@ -32,16 +34,11 @@ def filter_free_models(models_data: dict) -> list:
 
     return free_models
 
+
 def save_json(contents: dict, file_path: Path) -> None:
     with open(file_path, "w") as f:
         json.dump(contents, f, indent=4)
     print(f"Data saved to {file_path}.")
-
-
-def get_model_endpoints(client: OpenRouterClient, author: str, slug: str):
-    endpoints = client.get_model_endpoints(author, slug)
-    print(endpoints)
-
 
 
 if __name__ == "__main__":

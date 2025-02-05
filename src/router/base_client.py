@@ -1,5 +1,6 @@
 import requests
 
+
 class BaseClient:
     """A base class to handle HTTP requests and common logic for API interaction."""
 
@@ -28,10 +29,7 @@ class BaseClient:
 
         url = self.base_url + endpoint
         response = self.session.get(
-            url=url,
-            params=params,
-            headers=self.headers,
-            timeout=30
+            url=url, params=params, headers=self.headers, timeout=30
         )
 
         if response.status_code == 200:

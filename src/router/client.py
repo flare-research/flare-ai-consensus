@@ -1,5 +1,6 @@
 from src.router.base_client import BaseClient
 
+
 class OpenRouterClient(BaseClient):
     """Client to interact with the OpenRouter API."""
 

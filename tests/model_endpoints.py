@@ -1,5 +1,3 @@
-import json
-
 from src.config import config
 from src.router.client import OpenRouterClient
 from src.utils.openrouter import extract_author

@@ -1,4 +1,3 @@
-import json
 from pathlib import Path
 
 from src.config import config
@@ -7,12 +6,14 @@ from src.router.client import OpenRouterClient
 from src.utils import loader
 from src.utils.saving import save_json
 
+
 def get_selected_models(models_file: Path) -> list:
     """Read the selected model IDs from a JSON file."""
     data = loader.load_json(models_file)
 
     # Expecting the structure {"data": [list of model IDs]}
     return data.get("data", [])
+
 
 def get_prompt(prompt_file: Path) -> str:
     """Read the prompt text from a file."""
@@ -46,7 +47,7 @@ def main():
                 "model": model_id,
                 "prompt": prompt,
                 "max_tokens": 1500,
-                "temperature": 0.7
+                "temperature": 0.7,
             }
             model_response = requests.send_prompt_completion(client, payload)
             print(model_response)
@@ -62,6 +63,7 @@ def main():
     # Save the aggregated response to response.json in config.data_path
     output_file = config.data_path / "response.json"
     save_json(output_json, output_file)
+
 
 if __name__ == "__main__":
     main()

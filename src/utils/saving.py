@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+
 def save_json(contents: dict, file_path: Path) -> None:
     """Save json files to specified path."""
 

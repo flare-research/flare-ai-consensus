@@ -47,7 +47,9 @@ class BaseClient:
         :return: JSON response as a dictionary.
         """
         url = self.base_url + endpoint
-        response = self.session.post(url=url, headers=self.headers, json=json_payload, timeout=30)
+        response = self.session.post(
+            url=url, headers=self.headers, json=json_payload, timeout=30
+        )
 
         if response.status_code == 200:
             return response.json()

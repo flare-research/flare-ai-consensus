@@ -44,6 +44,23 @@ uv run python -m tests.models
 This will generate two `json` files in a data folder within the root directory.
 The two main endpoints for interacting with the models are:
 
-* Completion Endpoint: this is used for generating text completions in a non-conversational, single-prompt format.
-This functionality can be tested within `tests/completion_requests.py`.
-* Chat Completion Endpoint: this is designed for conversational interactions, and thus maintains a conversation history.
+* **Completion Endpoint**: this is used for generating text completions in a non-conversational, single-prompt format.
+This functionality can be tested by running (the `--prompt` and `--model` arguments are optional and can be also set directly in `tests/completion.py`):
+
+```bash
+uv run python -m tests.completion --prompt "Who is Ash Ketchum?" --model "google/learnlm-1.5-pro-experimental:free"
+```
+
+* **Chat Completion Endpoint**: this is designed for conversational interactions, and thus maintains a conversation history.
+All messages must include a role:
+  * `system`: used for providing context to a prompt.
+  * `user`: these are messages that include the queries for the model.
+  * `assistant`: models will generate responses with this role assigned. In addition to this, any message with this role will be considered as responses provided by the model in a previous turn.
+This endpoint can be tested by running:
+
+```bash
+uv run python -m tests.chat_completion --mode default
+```
+
+When running the `default` mode, a set of predefined prompts will be used. In the `interactive` mode you can manually enter new `user` prompts, with any previous model responses being kept as `assistant` responses.
+

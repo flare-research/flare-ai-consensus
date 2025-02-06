@@ -7,4 +7,3 @@ def extract_author(model_id: str) -> tuple[str, str]:
     """
     author, slug = model_id.split("/", 1)
     return author, slug
-

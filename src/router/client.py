@@ -56,3 +56,13 @@ class OpenRouterClient(BaseClient):
         """
         endpoint = "/completions"
         return self._post(endpoint, payload)
+
+    def send_chat_completion(self, payload: dict) -> dict:
+        """
+        Send a prompt to the chat completions endpoint.
+
+        The payload should include a "model" field and a "messages" array where each message has a "role"
+        (e.g., "user", "assistant", "system") and "content".
+        """
+        endpoint = "/chat/completions"
+        return self._post(endpoint, payload)

@@ -4,8 +4,12 @@
 
 This repository offers a Python implementation of a single-node multi-model Consensus Learning (CL) framework.
 CL is a decentralized ensemble learning paradigm introduced in [2402.16157](https://arxiv.org/abs/2402.16157).
-The current implementation is a centralized version of CL specialized for Large Language Models (LLMs), done through OpenAI's [OpenRouter](https://openrouter.ai/docs/quick-start).
-This provides access to more than 300 models through a unique interface.
+
+The current implementation is a centralized version of CL specialized to Large Language Models (LLMs). This is achieved through OpenAI's [OpenRouter](https://openrouter.ai/docs/quick-start), which provides access to more than 300 models through a unique interface.
+
+This repository serves as a reference point for the Consensus Learning track at the **Verifiable AI Hackathon** organized by Google Cloud x Flare.
+For more details about the hackathon tracks we refer to the [main hackathon website](https://hackathon.flare.network/).
+Make sure to check [Flare's blogpost](https://flare.network/flare-x-google-cloud-hackathon/) for additional information.
 
 ## Repository Setup
 
@@ -71,3 +75,5 @@ uv run python -m tests.chat_completion --mode default
 When running the `default` mode, a set of predefined prompts will be used. In the `interactive` mode you can manually enter new `user` prompts, with any previous model responses being kept as `assistant` responses.
 
 ## Consensus Learning
+
+The input parameters for running a single-node multi-model instance of Consensus Learning through OpenRouter are specified within `src/input.json`.

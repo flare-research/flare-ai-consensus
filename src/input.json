@@ -4,25 +4,37 @@
         "sophosympatheia/rogue-rose-103b-v0.2:free",
         "meta-llama/llama-3.2-3b-instruct:free"
     ],
-    "aggregator": [
-        {
-            "model": "deepseek/deepseek-r1:free",
-            "approach": "concatenation"
-        }
-    ],
-    "initial_prompt": [
+    "initial_conversation": [
         {
             "role": "system",
-            "content": "You are an expert on consensus learning."
+            "content": "You are an expert on urban infrastructure."
         },
         {
             "role": "user",
-            "content": "Explain the benefits of consensus learning in AI."
+            "content": "Propose a very simple strategy for reducing urban traffic congestion using technology and policy interventions."
         }
     ],
+    "aggregator": [
+        {
+            "model": "meta-llama/llama-3.2-3b-instruct:free",
+            "approach": "centralized-llm",
+            "aggregator_context": [
+                {
+                    "role": "system",
+                    "content": "Your role is to objectively evaluate responses from multiple large-language models and combine them into a single response based on majority."
+                }
+            ],
+            "aggregator_prompt": [
+                {
+                    "role": "user",
+                    "content": "Combine the previously provided responses into a single one based on their common features."
+                }
+            ]
+        }
+    ],
+    "aggregated_prompt_type": "system",
     "improvement_prompt": "Please provide an answer to the initial query based on the aggregated responses provided.",
-    "iterations": 0,
-    "new_prompt_type": "system",
-    "max_tokens": 1500,
+    "iterations": 1,
+    "max_tokens": 200,
     "temperature": 0.7
 }

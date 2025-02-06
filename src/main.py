@@ -19,26 +19,28 @@ def run_consensus(client: OpenRouterClient, consensus_config: ConsensusConfig) -
     """
     # Step 1. Get initial responses and aggregate them
     responses = consensus.send_initial_round(client, consensus_config)
-    aggregated_response = aggregator.concatenate_aggregator(responses)
-    print("Initial Aggregated Response:")
-    print(aggregated_response)
+    aggregated_response = aggregator.centralized_llm_aggregator(
+        client, consensus_config, responses
+    )  # aggregator.concatenate_aggregator(responses)
+    print("Initial responses have been aggregated.")
 
     # Step 2. Iterative improvement rounds.
     for i in range(consensus_config.iterations):
         responses = consensus.send_improvement_round(
             client, consensus_config, responses
         )
-        aggregated_response = aggregator.concatenate_aggregator(responses)
-        print(f"\nAggregated Response after iteration {i + 1}:")
-        print(aggregated_response)
+        aggregated_response = aggregator.centralized_llm_aggregator(
+            client, consensus_config, responses
+        )  # aggregator.concatenate_aggregator(responses)
+        print(f"\n The responses have been aggregated after iteration {i + 1}.")
 
-    # Save the final consensus.
+    # Step 3. Save the final consensus output.
     output_file = config.data_path / "final_consensus.json"
     saving.save_json(
         {"aggregated_response": aggregated_response, "responses": responses},
         output_file,
     )
-    print(f"\nFinal consensus saved to {output_file}")
+    print(f"\nFinal consensus saved to {output_file}.")
 
 
 def main() -> None:

@@ -41,7 +41,7 @@ def build_improvement_conversation(
     # Add aggregated response
     conversation.append(
         {
-            "role": consensus_config.new_prompt_type,
+            "role": consensus_config.aggregated_prompt_type,
             "content": f"Consensus: {aggregated_response}",
         }
     )

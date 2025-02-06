@@ -7,9 +7,7 @@ from src.utils.saving import save_json
 
 
 def parse_arguments() -> argparse.Namespace:
-    """
-    Parse command-line arguments and return the parsed namespace.
-    """
+    """Parse command-line arguments and return the parsed namespace."""
     parser = argparse.ArgumentParser(
         description="Send a prompt to the OpenRouter completion endpoint."
     )
@@ -43,7 +41,7 @@ def send_prompt(client: OpenRouterClient, model_id: str, prompt: str) -> dict:
         "max_tokens": 1500,
         "temperature": 0.7,
     }
-    return requests.send_prompt_completion(client, payload)
+    return requests.send_completion(client, payload)
 
 
 def start_chat(args: argparse.Namespace) -> None:

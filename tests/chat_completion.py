@@ -1,4 +1,3 @@
-# tests/chat_completion.py
 import argparse
 
 from src.config import config

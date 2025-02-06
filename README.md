@@ -33,6 +33,8 @@ You can check your available credits running:
 uv run python -m tests.credits
 ```
 
+## OpenRouter Endpoints
+
 You can obtain a list of all models, and a separate list of all free models supported by OpenRouter by running:
 
 ```bash
@@ -40,3 +42,8 @@ uv run python -m tests.models
 ```
 
 This will generate two `json` files in a data folder within the root directory.
+The two main endpoints for interacting with the models are:
+
+* Completion Endpoint: this is used for generating text completions in a non-conversational, single-prompt format.
+This functionality can be tested within `tests/completion_requests.py`.
+* Chat Completion Endpoint: this is designed for conversational interactions, and thus maintains a conversation history.

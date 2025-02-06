@@ -13,6 +13,7 @@ class Config:
     open_router_base_url: str
     open_router_api_key: str
     data_path: Path
+    input_path: Path
 
 
 def load_env_var(var_name: str) -> str:
@@ -32,4 +33,5 @@ config = Config(
     open_router_base_url=load_env_var("OPENROUTER_BASE_URL"),
     open_router_api_key=load_env_var("OPENROUTER_API_KEY"),
     data_path=create_path("data"),
+    input_path=create_path("src"),
 )

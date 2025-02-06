@@ -1,0 +1,9 @@
+{
+    "data": [
+        "qwen/qwen-vl-plus:free",
+        "deepseek/deepseek-r1-distill-llama-70b:free",
+        "google/gemini-2.0-flash-thinking-exp:free",
+        "sophosympatheia/rogue-rose-103b-v0.2:free",
+        "google/gemini-2.0-flash-thinking-exp-1219:free"
+    ]
+}

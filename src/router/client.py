@@ -47,3 +47,12 @@ class OpenRouterClient(BaseClient):
         """
         endpoint = "/credits"
         return self._get(endpoint)
+
+    def send_completion(self, payload: dict) -> dict:
+        """
+        Send a prompt to the completions endpoint.
+
+        The completions endpoint expects a JSON payload with keys like "model" and "prompt".
+        """
+        endpoint = "/completions"
+        return self._post(endpoint, payload)

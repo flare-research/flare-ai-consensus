@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 
 from src.config import config
 from src.router.client import OpenRouterClient
@@ -33,12 +32,6 @@ def filter_free_models(models_data: dict) -> list:
             free_models.append(model)
 
     return free_models
-
-
-def save_json(contents: dict, file_path: Path) -> None:
-    with open(file_path, "w") as f:
-        json.dump(contents, f, indent=4)
-    print(f"Data saved to {file_path}.")
 
 
 if __name__ == "__main__":

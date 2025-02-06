@@ -1,0 +1,21 @@
+{
+    "id": "gen-1738834343-9KGMKEOGRT66x2NCLPMO",
+    "provider": "Alibaba",
+    "model": "qwen/qwen-vl-plus",
+    "object": "chat.completion",
+    "created": 1738834343,
+    "choices": [
+        {
+            "logprobs": null,
+            "finish_reason": "stop",
+            "native_finish_reason": "stop",
+            "text": "The second best Pokemon trainer in the original \"Pokemon the Series\" is Brock. He is the leader of the Pokemon Gym in the region of Kanto and is known for his expertise in rock-type Pokemon."
+        }
+    ],
+    "system_fingerprint": null,
+    "usage": {
+        "prompt_tokens": 34,
+        "completion_tokens": 41,
+        "total_tokens": 75
+    }
+}

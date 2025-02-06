@@ -37,3 +37,20 @@ class BaseClient:
         else:
             msg = f"Error ({response.status_code}): {response.text}"
             raise ConnectionError(msg)
+
+    def _post(self, endpoint: str, json_payload: dict) -> dict:
+        """
+        Make a POST request to the API with a JSON payload and return the JSON response.
+
+        :param endpoint: The API endpoint (should begin with a slash, e.g., "/completions").
+        :param json_payload: The JSON payload to send.
+        :return: JSON response as a dictionary.
+        """
+        url = self.base_url + endpoint
+        response = self.session.post(url=url, headers=self.headers, json=json_payload, timeout=30)
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            msg = f"Error ({response.status_code}): {response.text}"
+            raise ConnectionError(msg)

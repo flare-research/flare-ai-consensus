@@ -22,14 +22,15 @@ def parse_arguments() -> argparse.Namespace:
 
 def default_mode(
     client: OpenRouterClient,
-    initial_prompt: str,
+    initial_conversation: list[dict],
     model_id: str,
     num_iterations: str,
     improvement_prompt: str,
 ) -> None:
     """Run the chat completion with a predefined set of messages."""
     # Set up the initial conversation with a user prompt.
-    conversation = [{"role": "user", "content": initial_prompt}]
+    conversation = []
+    conversation.extend(initial_conversation)
 
     for i in range(num_iterations):
         payload = {
@@ -108,14 +109,23 @@ def main() -> None:
     model_id = "qwen/qwen-vl-plus:free"
 
     if args.mode == "default":
-        initial_prompt = "Who is the second best Pokemon trainer in the original 'Pokemon the Series'?"
+        initial_conversation = [
+            {
+                "role": "system",
+                "content": "You are an expert on Pokemon. Provide concise and insightful answers.",
+            },
+            {
+                "role": "user",
+                "content": "Who is the second best Pokemon trainer in the original 'Pokemon the Series'?",
+            },
+        ]
         improvement_prompt = (
             "Can you improve on your previous answers with more precise arguments?"
         )
 
         default_mode(
             client,
-            initial_prompt,
+            initial_conversation,
             model_id,
             3,
             improvement_prompt,

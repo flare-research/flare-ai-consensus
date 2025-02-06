@@ -24,7 +24,7 @@ uv run ruff format
 uv run ruff check
 ```
 
-## OpenAI API Key
+### OpenAI API Key
 
 Generate an [OpenRouter API key](https://openrouter.ai/settings/keys) and add it to the `env` variables.
 You can check your available credits running:
@@ -33,7 +33,7 @@ You can check your available credits running:
 uv run python -m tests.credits
 ```
 
-## OpenRouter Endpoints
+### OpenRouter Endpoints
 
 You can obtain a list of all models, and a separate list of all free models supported by OpenRouter by running:
 
@@ -42,6 +42,12 @@ uv run python -m tests.models
 ```
 
 This will generate two `json` files in a data folder within the root directory.
+To trim this list down to models that work correctly, run:
+
+```bash
+uv run python -m tests.working_models
+```
+
 The two main endpoints for interacting with the models are:
 
 * **Completion Endpoint**: this is used for generating text completions in a non-conversational, single-prompt format.
@@ -64,3 +70,4 @@ uv run python -m tests.chat_completion --mode default
 
 When running the `default` mode, a set of predefined prompts will be used. In the `interactive` mode you can manually enter new `user` prompts, with any previous model responses being kept as `assistant` responses.
 
+## Consensus Learning

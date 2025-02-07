@@ -6,17 +6,13 @@ from src.consensus import (
 from src.consensus.config import ConsensusConfig
 from src.router.client import OpenRouterClient
 from src.utils import (
-    saving,
+    saver,
     loader,
 )
 
 
-def run_consensus(client: OpenRouterClient, consensus_config: ConsensusConfig) -> None:
-    """Run the consensus learning loop.
-
-    :param client: An instance of OpenRouterClient.
-    :param consensus_config: An instance of ConsensusConfig.
-    """
+def run_sync_consensus(client: OpenRouterClient, consensus_config: ConsensusConfig) -> None:
+    """Consensus learning loop with synchronous requests."""
     # Step 1. Get initial responses.
     responses = consensus.send_initial_round(client, consensus_config)
 
@@ -37,15 +33,15 @@ def run_consensus(client: OpenRouterClient, consensus_config: ConsensusConfig) -
         aggregated_response = aggregator.centralized_llm_aggregator(
             client, consensus_config.aggregator_config, responses
         )
-        print(f"\n The responses have been aggregated after iteration {i + 1}.")
+        print(f"\nThe responses have been aggregated after iteration {i + 1}.")
 
     # Step 4. Save the final consensus output.
     output_file = config.data_path / "final_consensus.json"
-    saving.save_json(
+    saver.save_json(
         {"aggregated_response": aggregated_response, "responses": responses},
         output_file,
     )
-    print(f"\nFinal consensus saved to {output_file}.")
+    print(aggregated_response)
 
 
 def main() -> None:
@@ -58,8 +54,8 @@ def main() -> None:
         api_key=config.open_router_api_key, base_url=config.open_router_base_url
     )
 
-    # Run the consensus learning process.
-    run_consensus(client, consensus_config)
+    # Run the consensus learning process with synchronous requests.
+    run_sync_consensus(client, consensus_config)
 
 
 if __name__ == "__main__":

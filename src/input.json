@@ -50,5 +50,5 @@
     ],
     "aggregated_prompt_type": "system",
     "improvement_prompt": "Please provide an answer to the initial query based on the aggregated responses provided.",
-    "iterations": 1
+    "iterations": 2
 }

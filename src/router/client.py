@@ -2,7 +2,7 @@ from src.router.base_client import BaseClient
 
 
 class OpenRouterClient(BaseClient):
-    """Client to interact with the OpenRouter API."""
+    """Sync Client to interact with the OpenRouter API."""
 
     def __init__(self, api_key: str | None = None, base_url: str | None = None) -> None:
         """

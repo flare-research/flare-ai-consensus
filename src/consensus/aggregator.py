@@ -1,4 +1,4 @@
-from src.consensus.config import ConsensusConfig
+from src.consensus.config import AggregatorConfig
 from src.router.client import OpenRouterClient
 
 
@@ -14,19 +14,19 @@ def concatenate_aggregator(responses: dict) -> str:
 
 def centralized_llm_aggregator(
     client: OpenRouterClient,
-    consensus_config: ConsensusConfig,
+    aggregator_config: AggregatorConfig,
     aggregated_responses: str,
 ) -> str:
     """Use a centralized LLM  to combine responses.
 
     :param client: An OpenRouterClient instance.
-    :param consensus_config: An instance of ConsensusConfig.
+    :param aggregator_config: An instance of AggregatorConfig.
     :param aggregated_responses: A string containing aggregated responses from individual models.
     :return: The aggregator's combined response.
     """
     # Build the message list.
     messages = []
-    messages.extend(consensus_config.aggregator.context)
+    messages.extend(aggregator_config.context)
 
     # Add a system message with the aggregated responses.
     messages.append(
@@ -34,13 +34,13 @@ def centralized_llm_aggregator(
     )
 
     # Add the aggregator prompt
-    messages.extend(consensus_config.aggregator.prompt)
+    messages.extend(aggregator_config.prompt)
 
     payload = {
-        "model": consensus_config.aggregator.model,
+        "model": aggregator_config.model.model_id,
         "messages": messages,
-        "max_tokens": consensus_config.max_tokens,
-        "temperature": consensus_config.temperature,
+        "max_tokens": aggregator_config.model.max_tokens,
+        "temperature": aggregator_config.model.temperature,
     }
 
     # Get aggregated response from the centralized LLM

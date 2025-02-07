@@ -1,8 +1,20 @@
 {
     "models": [
-        "qwen/qwen-vl-plus:free",
-        "sophosympatheia/rogue-rose-103b-v0.2:free",
-        "meta-llama/llama-3.2-3b-instruct:free"
+        {
+            "id": "qwen/qwen-vl-plus:free",
+            "max_tokens": 200,
+            "temperature": 0.7
+        },
+        {
+            "id": "sophosympatheia/rogue-rose-103b-v0.2:free",
+            "max_tokens": 200,
+            "temperature": 0.7
+        },
+        {
+            "id": "meta-llama/llama-3.2-3b-instruct:free",
+            "max_tokens": 200,
+            "temperature": 0.7
+        }
     ],
     "initial_conversation": [
         {
@@ -16,7 +28,11 @@
     ],
     "aggregator": [
         {
-            "model": "meta-llama/llama-3.2-3b-instruct:free",
+            "model": {
+                "id": "meta-llama/llama-3.2-3b-instruct:free",
+                "max_tokens": 200,
+                "temperature": 0.7
+            },
             "approach": "centralized-llm",
             "aggregator_context": [
                 {
@@ -34,7 +50,5 @@
     ],
     "aggregated_prompt_type": "system",
     "improvement_prompt": "Please provide an answer to the initial query based on the aggregated responses provided.",
-    "iterations": 1,
-    "max_tokens": 200,
-    "temperature": 0.7
+    "iterations": 1
 }

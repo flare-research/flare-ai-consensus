@@ -12,29 +12,34 @@ from src.utils import (
 
 
 def run_consensus(client: OpenRouterClient, consensus_config: ConsensusConfig) -> None:
-    """Run the consensus learning loop using the provided client and consensus configuration.
+    """Run the consensus learning loop.
 
     :param client: An instance of OpenRouterClient.
     :param consensus_config: An instance of ConsensusConfig.
     """
-    # Step 1. Get initial responses and aggregate them
+    # Step 1. Get initial responses.
     responses = consensus.send_initial_round(client, consensus_config)
+
+    # Step 2. Aggregate responses with chosen method.
     aggregated_response = aggregator.centralized_llm_aggregator(
-        client, consensus_config, responses
-    )  # aggregator.concatenate_aggregator(responses)
+        client, consensus_config.aggregator_config, responses
+    )
     print("Initial responses have been aggregated.")
 
-    # Step 2. Iterative improvement rounds.
+    # Step 3. Iterative improvement rounds.
     for i in range(consensus_config.iterations):
+        # Step 3a. Get new responses.
         responses = consensus.send_improvement_round(
-            client, consensus_config, responses
+            client, consensus_config, aggregated_response
         )
+
+        # Step 3b. Aggregate new responses
         aggregated_response = aggregator.centralized_llm_aggregator(
-            client, consensus_config, responses
-        )  # aggregator.concatenate_aggregator(responses)
+            client, consensus_config.aggregator_config, responses
+        )
         print(f"\n The responses have been aggregated after iteration {i + 1}.")
 
-    # Step 3. Save the final consensus output.
+    # Step 4. Save the final consensus output.
     output_file = config.data_path / "final_consensus.json"
     saving.save_json(
         {"aggregated_response": aggregated_response, "responses": responses},

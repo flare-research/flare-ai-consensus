@@ -1,5 +1,6 @@
 from src.consensus.config import AggregatorConfig
 from src.router.client import OpenRouterClient
+from src.router.async_client import AsyncOpenRouterClient
 
 
 def concatenate_aggregator(responses: dict) -> str:

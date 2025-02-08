@@ -19,11 +19,11 @@
     "initial_conversation": [
         {
             "role": "system",
-            "content": "You are an expert on urban infrastructure."
+            "content": "You are an expert on in chemistry."
         },
         {
             "role": "user",
-            "content": "Propose a very simple strategy for reducing urban traffic congestion using technology and policy interventions."
+            "content": "Why is heat emitted in a freshly painted room?"
         }
     ],
     "aggregator": [

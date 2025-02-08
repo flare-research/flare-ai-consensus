@@ -6,23 +6,6 @@ from src.router.client import OpenRouterClient
 from src.utils import parser
 
 
-def send_initial_round(
-    client: OpenRouterClient, consensus_config: ConsensusConfig
-) -> dict:
-    """Send the initial prompt to each model.
-
-    :param client: An instance of OpenRouterClient.
-    :param consensus_config: An instance of ConsensusConfig.
-    :return: A dict mapping model IDs to their response texts.
-    """
-    responses = {}
-    for model in consensus_config.models:
-        conversation = consensus_config.initial_prompt
-        responses[model.model_id] = send_prompt(client, model, conversation)
-
-    return responses
-
-
 def send_prompt(
     client: OpenRouterClient,
     model: ModelConfig,
@@ -78,26 +61,29 @@ def build_improvement_conversation(
     return conversation
 
 
-def send_improvement_round(
+def send_round(
     client: OpenRouterClient,
     consensus_config: ConsensusConfig,
-    aggregated_response: str,
+    aggregated_response: str = None,
 ) -> dict:
-    """For each model, build an updated conversation and send it.
+    """
+    Sends a round of chat completion requests for all models.
+    If `aggregated_response` is not provided, the initial prompt is used.
 
     :param client: An instance of OpenRouterClient.
     :param consensus_config: An instance of ConsensusConfig.
-    :param aggregated_response: Dict mapping model IDs to their previous responses.
-    :return: Dict mapping model IDs to their new responses.
+    :param aggregated_response: The aggregated consensus from the previous round (or None).
+    :return: A dictionary mapping model IDs to their response texts.
     """
     responses = {}
-
     for model in consensus_config.models:
-        # Build conversation
-        conversation = build_improvement_conversation(
-            consensus_config, aggregated_response
-        )
-
-        # Get response
+        if aggregated_response is None:
+            # For the initial round, use the initial conversation.
+            conversation = consensus_config.initial_prompt
+            print(f"Sending initial prompt to {model.model_id}.")
+        else:
+            # For improvement rounds, build an updated conversation.
+            conversation = build_improvement_conversation(consensus_config, aggregated_response)
+            print(f"Sending improvement prompt to {model.model_id}.")
         responses[model.model_id] = send_prompt(client, model, conversation)
     return responses

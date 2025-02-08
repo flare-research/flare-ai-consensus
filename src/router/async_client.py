@@ -1,4 +1,4 @@
-from src.router.base_client import AsyncBaseClient
+from src.router.async_base_client import AsyncBaseClient
 
 
 class AsyncOpenRouterClient(AsyncBaseClient):

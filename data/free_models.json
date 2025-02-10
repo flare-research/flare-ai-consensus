@@ -1,6 +1,54 @@
 {
     "data": [
         {
+            "id": "google/gemini-2.0-flash-lite-preview-02-05:free",
+            "name": "Google: Gemini Flash Lite 2.0 Preview (free)",
+            "created": 1738768262,
+            "description": "Gemini Flash Lite 2.0 offers a significantly faster time to first token (TTFT) compared to [Gemini Flash 1.5](google/gemini-flash-1.5), while maintaining quality on par with larger models like [Gemini Pro 1.5](google/gemini-pro-1.5). Because it's currently in preview, it will be **heavily rate-limited** by Google. This model will move from free to paid pending a general rollout on February 24th, at $0.075 / $0.30 per million input / ouput tokens respectively.",
+            "context_length": 1000000,
+            "architecture": {
+                "modality": "text+image->text",
+                "tokenizer": "Gemini",
+                "instruct_type": null
+            },
+            "pricing": {
+                "prompt": "0",
+                "completion": "0",
+                "image": "0",
+                "request": "0"
+            },
+            "top_provider": {
+                "context_length": 1000000,
+                "max_completion_tokens": 8192,
+                "is_moderated": false
+            },
+            "per_request_limits": null
+        },
+        {
+            "id": "google/gemini-2.0-pro-exp-02-05:free",
+            "name": "Google: Gemini Pro 2.0 Experimental (free)",
+            "created": 1738768044,
+            "description": "Gemini 2.0 Pro Experimental is a bleeding-edge version of the Gemini 2.0 Pro model. Because it's currently experimental, it will be **heavily rate-limited** by Google.\n\nUsage of Gemini is subject to Google's [Gemini Terms of Use](https://ai.google.dev/terms).\n\n#multimodal",
+            "context_length": 2000000,
+            "architecture": {
+                "modality": "text+image->text",
+                "tokenizer": "Gemini",
+                "instruct_type": null
+            },
+            "pricing": {
+                "prompt": "0",
+                "completion": "0",
+                "image": "0",
+                "request": "0"
+            },
+            "top_provider": {
+                "context_length": 2000000,
+                "max_completion_tokens": 8192,
+                "is_moderated": false
+            },
+            "per_request_limits": null
+        },
+        {
             "id": "qwen/qwen-vl-plus:free",
             "name": "Qwen: Qwen VL Plus (free)",
             "created": 1738731255,
@@ -67,7 +115,7 @@
             },
             "top_provider": {
                 "context_length": 8192,
-                "max_completion_tokens": 2048,
+                "max_completion_tokens": 32768,
                 "is_moderated": false
             },
             "per_request_limits": null
@@ -115,7 +163,7 @@
             },
             "top_provider": {
                 "context_length": 163840,
-                "max_completion_tokens": 4096,
+                "max_completion_tokens": null,
                 "is_moderated": false
             },
             "per_request_limits": null
@@ -139,6 +187,30 @@
             },
             "top_provider": {
                 "context_length": 4096,
+                "max_completion_tokens": null,
+                "is_moderated": false
+            },
+            "per_request_limits": null
+        },
+        {
+            "id": "deepseek/deepseek-chat:free",
+            "name": "DeepSeek: DeepSeek V3 (free)",
+            "created": 1735241320,
+            "description": "DeepSeek-V3 is the latest model from the DeepSeek team, building upon the instruction following and coding abilities of the previous versions. Pre-trained on nearly 15 trillion tokens, the reported evaluations reveal that the model outperforms other open-source models and rivals leading closed-source models.\n\nFor model details, please visit [the DeepSeek-V3 repo](https://github.com/deepseek-ai/DeepSeek-V3) for more information, or see the [launch announcement](https://api-docs.deepseek.com/news/news1226).",
+            "context_length": 128000,
+            "architecture": {
+                "modality": "text->text",
+                "tokenizer": "DeepSeek",
+                "instruct_type": null
+            },
+            "pricing": {
+                "prompt": "0",
+                "completion": "0",
+                "image": "0",
+                "request": "0"
+            },
+            "top_provider": {
+                "context_length": 128000,
                 "max_completion_tokens": null,
                 "is_moderated": false
             },
@@ -217,15 +289,15 @@
             "per_request_limits": null
         },
         {
-            "id": "google/gemini-exp-1121:free",
-            "name": "Google: Gemini Experimental 1121 (free)",
-            "created": 1732216725,
-            "description": "Experimental release (November 21st, 2024) of Gemini.",
-            "context_length": 40960,
+            "id": "meta-llama/llama-3.3-70b-instruct:free",
+            "name": "Meta: Llama 3.3 70B Instruct (free)",
+            "created": 1733506137,
+            "description": "The Meta Llama 3.3 multilingual large language model (LLM) is a pretrained and instruction tuned generative model in 70B (text in/text out). The Llama 3.3 instruction tuned text only model is optimized for multilingual dialogue use cases and outperforms many of the available open source and closed chat models on common industry benchmarks.\n\nSupported languages: English, German, French, Italian, Portuguese, Hindi, Spanish, and Thai.\n\n[Model Card](https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md)",
+            "context_length": 131072,
             "architecture": {
-                "modality": "text+image->text",
-                "tokenizer": "Gemini",
-                "instruct_type": null
+                "modality": "text->text",
+                "tokenizer": "Llama3",
+                "instruct_type": "llama3"
             },
             "pricing": {
                 "prompt": "0",
@@ -234,8 +306,8 @@
                 "request": "0"
             },
             "top_provider": {
-                "context_length": 40960,
-                "max_completion_tokens": 8192,
+                "context_length": 131072,
+                "max_completion_tokens": 2048,
                 "is_moderated": false
             },
             "per_request_limits": null
@@ -245,30 +317,6 @@
             "name": "Google: LearnLM 1.5 Pro Experimental (free)",
             "created": 1732216551,
             "description": "An experimental version of [Gemini 1.5 Pro](/google/gemini-pro-1.5) from Google.",
-            "context_length": 40960,
-            "architecture": {
-                "modality": "text+image->text",
-                "tokenizer": "Gemini",
-                "instruct_type": null
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 40960,
-                "max_completion_tokens": 8192,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
-            "id": "google/gemini-exp-1114:free",
-            "name": "Google: Gemini Experimental 1114 (free)",
-            "created": 1731714740,
-            "description": "Gemini 11-14 (2024) experimental model features \"quality\" improvements.",
             "context_length": 40960,
             "architecture": {
                 "modality": "text+image->text",
@@ -313,78 +361,6 @@
             "per_request_limits": null
         },
         {
-            "id": "meta-llama/llama-3.2-3b-instruct:free",
-            "name": "Meta: Llama 3.2 3B Instruct (free)",
-            "created": 1727222400,
-            "description": "Llama 3.2 3B is a 3-billion-parameter multilingual large language model, optimized for advanced natural language processing tasks like dialogue generation, reasoning, and summarization. Designed with the latest transformer architecture, it supports eight languages, including English, Spanish, and Hindi, and is adaptable for additional languages.\n\nTrained on 9 trillion tokens, the Llama 3.2 3B model excels in instruction-following, complex reasoning, and tool use. Its balanced performance makes it ideal for applications needing accuracy and efficiency in text generation across multilingual settings.\n\nClick here for the [original model card](https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/MODEL_CARD.md).\n\nUsage of this model is subject to [Meta's Acceptable Use Policy](https://www.llama.com/llama3/use-policy/).",
-            "context_length": 4096,
-            "architecture": {
-                "modality": "text->text",
-                "tokenizer": "Llama3",
-                "instruct_type": "llama3"
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 4096,
-                "max_completion_tokens": 2048,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
-            "id": "meta-llama/llama-3.2-1b-instruct:free",
-            "name": "Meta: Llama 3.2 1B Instruct (free)",
-            "created": 1727222400,
-            "description": "Llama 3.2 1B is a 1-billion-parameter language model focused on efficiently performing natural language tasks, such as summarization, dialogue, and multilingual text analysis. Its smaller size allows it to operate efficiently in low-resource environments while maintaining strong task performance.\n\nSupporting eight core languages and fine-tunable for more, Llama 1.3B is ideal for businesses or developers seeking lightweight yet powerful AI solutions that can operate in diverse multilingual settings without the high computational demand of larger models.\n\nClick here for the [original model card](https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/MODEL_CARD.md).\n\nUsage of this model is subject to [Meta's Acceptable Use Policy](https://www.llama.com/llama3/use-policy/).",
-            "context_length": 4096,
-            "architecture": {
-                "modality": "text->text",
-                "tokenizer": "Llama3",
-                "instruct_type": "llama3"
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 4096,
-                "max_completion_tokens": 2048,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
-            "id": "meta-llama/llama-3.2-90b-vision-instruct:free",
-            "name": "Meta: Llama 3.2 90B Vision Instruct (free)",
-            "created": 1727222400,
-            "description": "The Llama 90B Vision model is a top-tier, 90-billion-parameter multimodal model designed for the most challenging visual reasoning and language tasks. It offers unparalleled accuracy in image captioning, visual question answering, and advanced image-text comprehension. Pre-trained on vast multimodal datasets and fine-tuned with human feedback, the Llama 90B Vision is engineered to handle the most demanding image-based AI tasks.\n\nThis model is perfect for industries requiring cutting-edge multimodal AI capabilities, particularly those dealing with complex, real-time visual and textual analysis.\n\nClick here for the [original model card](https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/MODEL_CARD_VISION.md).\n\nUsage of this model is subject to [Meta's Acceptable Use Policy](https://www.llama.com/llama3/use-policy/).",
-            "context_length": 4096,
-            "architecture": {
-                "modality": "text+image->text",
-                "tokenizer": "Llama3",
-                "instruct_type": "llama3"
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 4096,
-                "max_completion_tokens": 2048,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
             "id": "meta-llama/llama-3.2-11b-vision-instruct:free",
             "name": "Meta: Llama 3.2 11B Vision Instruct (free)",
             "created": 1727222400,
@@ -409,54 +385,6 @@
             "per_request_limits": null
         },
         {
-            "id": "google/gemini-flash-1.5-exp:free",
-            "name": "Google: Gemini Flash 1.5 Experimental (free)",
-            "created": 1724803200,
-            "description": "Gemini 1.5 Flash Experimental is an experimental version of the [Gemini 1.5 Flash](/models/google/gemini-flash-1.5) model.\n\nUsage of Gemini is subject to Google's [Gemini Terms of Use](https://ai.google.dev/terms).\n\n#multimodal\n\nNote: This model is experimental and not suited for production use-cases. It may be removed or redirected to another model in the future.",
-            "context_length": 1000000,
-            "architecture": {
-                "modality": "text+image->text",
-                "tokenizer": "Gemini",
-                "instruct_type": null
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 1000000,
-                "max_completion_tokens": 8192,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
-            "id": "google/gemini-flash-1.5-exp",
-            "name": "Google: Gemini Flash 1.5 Experimental",
-            "created": 1724803200,
-            "description": "Gemini 1.5 Flash Experimental is an experimental version of the [Gemini 1.5 Flash](/models/google/gemini-flash-1.5) model.\n\nUsage of Gemini is subject to Google's [Gemini Terms of Use](https://ai.google.dev/terms).\n\n#multimodal\n\nNote: This model is experimental and not suited for production use-cases. It may be removed or redirected to another model in the future.",
-            "context_length": 1000000,
-            "architecture": {
-                "modality": "text+image->text",
-                "tokenizer": "Gemini",
-                "instruct_type": null
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 1000000,
-                "max_completion_tokens": 8192,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
             "id": "google/gemini-flash-1.5-8b-exp",
             "name": "Google: Gemini Flash 1.5 8B Experimental",
             "created": 1724803200,
@@ -476,102 +404,6 @@
             "top_provider": {
                 "context_length": 1000000,
                 "max_completion_tokens": 8192,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
-            "id": "google/gemini-pro-1.5-exp",
-            "name": "Google: Gemini Pro 1.5 Experimental",
-            "created": 1722470400,
-            "description": "Gemini 1.5 Pro Experimental is a bleeding-edge version of the [Gemini 1.5 Pro](/models/google/gemini-pro-1.5) model. Because it's currently experimental, it will be **heavily rate-limited** by Google.\n\nUsage of Gemini is subject to Google's [Gemini Terms of Use](https://ai.google.dev/terms).\n\n#multimodal",
-            "context_length": 1000000,
-            "architecture": {
-                "modality": "text+image->text",
-                "tokenizer": "Gemini",
-                "instruct_type": null
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 1000000,
-                "max_completion_tokens": 8192,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
-            "id": "meta-llama/llama-3.1-405b-instruct:free",
-            "name": "Meta: Llama 3.1 405B Instruct (free)",
-            "created": 1721692800,
-            "description": "The highly anticipated 400B class of Llama3 is here! Clocking in at 128k context with impressive eval scores, the Meta AI team continues to push the frontier of open-source LLMs.\n\nMeta's latest class of model (Llama 3.1) launched with a variety of sizes & flavors. This 405B instruct-tuned version is optimized for high quality dialogue usecases.\n\nIt has demonstrated strong performance compared to leading closed-source models including GPT-4o and Claude 3.5 Sonnet in evaluations.\n\nTo read more about the model release, [click here](https://ai.meta.com/blog/meta-llama-3-1/). Usage of this model is subject to [Meta's Acceptable Use Policy](https://llama.meta.com/llama3/use-policy/).",
-            "context_length": 8000,
-            "architecture": {
-                "modality": "text->text",
-                "tokenizer": "Llama3",
-                "instruct_type": "llama3"
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 8000,
-                "max_completion_tokens": 4000,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
-            "id": "meta-llama/llama-3.1-8b-instruct:free",
-            "name": "Meta: Llama 3.1 8B Instruct (free)",
-            "created": 1721692800,
-            "description": "Meta's latest class of model (Llama 3.1) launched with a variety of sizes & flavors. This 8B instruct-tuned version is fast and efficient.\n\nIt has demonstrated strong performance compared to leading closed-source models in human evaluations.\n\nTo read more about the model release, [click here](https://ai.meta.com/blog/meta-llama-3-1/). Usage of this model is subject to [Meta's Acceptable Use Policy](https://llama.meta.com/llama3/use-policy/).",
-            "context_length": 8192,
-            "architecture": {
-                "modality": "text->text",
-                "tokenizer": "Llama3",
-                "instruct_type": "llama3"
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 8192,
-                "max_completion_tokens": 4096,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
-            "id": "meta-llama/llama-3.1-70b-instruct:free",
-            "name": "Meta: Llama 3.1 70B Instruct (free)",
-            "created": 1721692800,
-            "description": "Meta's latest class of model (Llama 3.1) launched with a variety of sizes & flavors. This 70B instruct-tuned version is optimized for high quality dialogue usecases.\n\nIt has demonstrated strong performance compared to leading closed-source models in human evaluations.\n\nTo read more about the model release, [click here](https://ai.meta.com/blog/meta-llama-3-1/). Usage of this model is subject to [Meta's Acceptable Use Policy](https://llama.meta.com/llama3/use-policy/).",
-            "context_length": 8192,
-            "architecture": {
-                "modality": "text->text",
-                "tokenizer": "Llama3",
-                "instruct_type": "llama3"
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 8192,
-                "max_completion_tokens": 4096,
                 "is_moderated": false
             },
             "per_request_limits": null

@@ -1,8 +1,5 @@
 from src.consensus.config import AggregatorConfig
-from src.router.client import (
-    OpenRouterClient,
-    AsyncOpenRouterClient
-)
+from src.router.client import OpenRouterClient, AsyncOpenRouterClient
 
 
 def concatenate_aggregator(responses: dict) -> str:
@@ -69,10 +66,9 @@ async def async_centralized_llm_aggregator(
     """
     messages = []
     messages.extend(aggregator_config.context)
-    messages.append({
-        "role": "system",
-        "content": f"Aggregated responses:\n{aggregated_responses}"
-    })
+    messages.append(
+        {"role": "system", "content": f"Aggregated responses:\n{aggregated_responses}"}
+    )
     messages.extend(aggregator_config.prompt)
 
     payload = {
@@ -83,5 +79,7 @@ async def async_centralized_llm_aggregator(
     }
 
     response = await client.send_chat_completion(payload)
-    aggregated_text = response.get("choices", [])[0].get("message", {}).get("content", "")
+    aggregated_text = (
+        response.get("choices", [])[0].get("message", {}).get("content", "")
+    )
     return aggregated_text

@@ -1,15 +1,9 @@
 import asyncio
 
 from src.config import config
-from src.consensus import (
-    aggregator,
-    consensus
-)
+from src.consensus import aggregator, consensus
 from src.consensus.config import ConsensusConfig
-from src.router.client import (
-    OpenRouterClient,
-    AsyncOpenRouterClient
-)
+from src.router.client import AsyncOpenRouterClient
 from src.utils import (
     saver,
     loader,
@@ -36,7 +30,9 @@ async def run_consensus(
 
     # Step 2: Improvement rounds.
     for i in range(consensus_config.iterations):
-        responses = await consensus.send_round(client, consensus_config, aggregated_response)
+        responses = await consensus.send_round(
+            client, consensus_config, aggregated_response
+        )
         aggregated_response = await aggregator.async_centralized_llm_aggregator(
             client, consensus_config.aggregator_config, responses
         )
@@ -44,8 +40,14 @@ async def run_consensus(
 
     # Step 3: Save final consensus.
     output_file = config.data_path / "final_consensus.json"
-    saver.save_json({"aggregated_response": aggregated_response, "responses": responses}, output_file)
+    saver.save_json(
+        {"aggregated_response": aggregated_response, "responses": responses},
+        output_file,
+    )
     print(f"\nFinal consensus saved to {output_file}")
+
+    # Close the async client to release resources.
+    await client.close()
 
 
 def main() -> None:
@@ -60,6 +62,7 @@ def main() -> None:
 
     # Run the consensus learning process with synchronous requests.
     asyncio.run(run_consensus(client, consensus_config))
+
 
 if __name__ == "__main__":
     main()

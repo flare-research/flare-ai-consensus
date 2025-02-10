@@ -3,11 +3,12 @@ from src.config import config
 from src.router.client import AsyncOpenRouterClient
 from src.utils.loader import load_json
 from src.utils.saver import save_json
-from src.consensus.config import ModelConfig  # Not used here, but if needed later
+from src.consensus.config import ModelConfig
+
 
 async def _test_model_completion(
     client: AsyncOpenRouterClient,
-    model: dict,
+    model: ModelConfig,
     test_prompt: str,
     api_endpoint: str,
     delay: float = 1.0,
@@ -55,7 +56,9 @@ async def _test_model_completion(
             return (model, True)
         else:
             error_info = response.get("error", {})
-            print(f"Model {model_id} returned error in {api_endpoint}: {error_info.get('message', 'Unknown error')}")
+            print(
+                f"Model {model_id} returned error in {api_endpoint}: {error_info.get('message', 'Unknown error')}"
+            )
             return (model, False)
     except Exception as e:
         print(f"Error testing model {model_id} with {api_endpoint}: {e}")
@@ -79,13 +82,14 @@ async def filter_working_models(
     :return: A list of models (dicts) that work with the specified API.
     """
     tasks = [
-        _test_model_completion(client, model, test_prompt, api_endpoint, delay = i)
+        _test_model_completion(client, model, test_prompt, api_endpoint, delay=i * 2)
         for i, model in enumerate(free_models)
     ]
     results = await asyncio.gather(*tasks, return_exceptions=True)
     # Filter out any exceptions and only keep models where works is True.
     valid_models = [
-        model for result in results
+        model
+        for result in results
         if not isinstance(result, Exception) and result[1]
         for model in [result[0]]
     ]
@@ -99,19 +103,20 @@ async def main() -> None:
     test_prompt = "Who is Ash Ketchum?"
 
     # Initialize the asynchronous OpenRouter client.
-    client = AsyncOpenRouterClient(api_key=config.open_router_api_key, base_url=config.open_router_base_url)
+    client = AsyncOpenRouterClient(
+        api_key=config.open_router_api_key, base_url=config.open_router_base_url
+    )
 
-    # Filter free models that work with the completions endpoint.
-    working_completion_models = await filter_working_models(client, free_models, test_prompt, "completion")
-    completion_output_file = config.data_path / "free_working_completion_models.json"
-    save_json({"data": working_completion_models}, completion_output_file)
-    print(f"\nWorking completion models saved to {completion_output_file}.\n")
-
-    # Filter free models that work with the chat completions endpoint.
-    working_chat_models = await filter_working_models(client, free_models, test_prompt, "chat_completion")
-    chat_output_file = config.data_path / "free_working_chat_models.json"
-    save_json({"data": working_chat_models}, chat_output_file)
-    print(f"\nWorking chat models saved to {chat_output_file}.")
+    # Filter free models that work with the completions endpoints.
+    for endpoint in ["completion", "chat_completion"]:
+        working_models = await filter_working_models(
+            client, free_models, test_prompt, endpoint
+        )
+        completion_output_file = (
+            config.data_path / f"free_working_{endpoint}_models.json"
+        )
+        save_json({"data": working_models}, completion_output_file)
+        print(f"\nWorking {endpoint} models saved to {completion_output_file}.\n")
 
     await client.close()
 

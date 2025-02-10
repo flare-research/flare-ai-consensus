@@ -1,7 +1,4 @@
-from src.router.base_client import (
-    AsyncBaseClient,
-    BaseClient
-)
+from src.router.base_client import AsyncBaseClient, BaseClient
 
 
 class OpenRouterClient(BaseClient):

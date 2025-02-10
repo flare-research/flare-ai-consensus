@@ -1,5 +1,6 @@
 from src.router.client import AsyncOpenRouterClient
 
+
 async def send_completion(client: AsyncOpenRouterClient, payload: dict) -> dict:
     """
     Asynchronously send the prompt to the completions endpoint for a specific model.

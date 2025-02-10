@@ -1,9 +1,6 @@
 import asyncio
 
-from src.consensus.config import (
-    ConsensusConfig,
-    ModelConfig
-)
+from src.consensus.config import ConsensusConfig, ModelConfig
 from src.router.client import AsyncOpenRouterClient
 from src.utils.parser import parse_chat_response
 
@@ -33,6 +30,7 @@ def build_improvement_conversation(
     )
     return conversation
 
+
 async def get_response_for_model(
     client: AsyncOpenRouterClient,
     consensus_config: ConsensusConfig,
@@ -54,7 +52,9 @@ async def get_response_for_model(
         print(f"Sending initial prompt to {model.model_id}.")
     else:
         # Build the improvement conversation.
-        conversation = build_improvement_conversation(consensus_config, aggregated_response)
+        conversation = build_improvement_conversation(
+            consensus_config, aggregated_response
+        )
         print(f"Sending improvement prompt to {model.model_id}.")
 
     payload = {

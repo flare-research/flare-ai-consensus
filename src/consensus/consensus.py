@@ -1,38 +1,11 @@
+import asyncio
+
 from src.consensus.config import (
     ConsensusConfig,
-    ModelConfig,
+    ModelConfig
 )
-from src.router.client import OpenRouterClient
-from src.utils import parser
-
-
-def send_prompt(
-    client: OpenRouterClient,
-    model: ModelConfig,
-    conversation: list[dict],
-) -> str:
-    """
-    Send chat completion request for a specific model.
-
-    :param client: An instance of OpenRouterClient.
-    :param consensus_config: An instance of ConsensusConfig.
-    :param model: The model id.
-    :param conversation: A list of instructions for the model.
-    :return: A dict mapping model IDs to their response texts.
-    """
-    # Format the request
-    payload = {
-        "model": model.model_id,
-        "messages": conversation,
-        "max_tokens": model.max_tokens,
-        "temperature": model.temperature,
-    }
-
-    # Get response
-    response = client.send_chat_completion(payload)
-    print(f"{model.model_id} has provided a new response.")
-
-    return parser.parse_chat_response(response)
+from src.router.client import AsyncOpenRouterClient
+from src.utils.parser import parse_chat_response
 
 
 def build_improvement_conversation(
@@ -60,30 +33,59 @@ def build_improvement_conversation(
     )
     return conversation
 
+async def get_response_for_model(
+    client: AsyncOpenRouterClient,
+    consensus_config: ConsensusConfig,
+    model: ModelConfig,
+    aggregated_response: str,
+) -> tuple[str, str]:
+    """
+    Asynchronously sends a chat completion request for a given model.
 
-def send_round(
-    client: OpenRouterClient,
+    :param client: An instance of an asynchronous OpenRouter client.
+    :param consensus_config: An instance of ConsensusConfig.
+    :param aggregated_response: The aggregated consensus response from the previous round (or None).
+    :param model: A ModelConfig instance.
+    :return: A tuple of (model_id, response text).
+    """
+    if aggregated_response is None:
+        # Use initial prompt for the first round.
+        conversation = consensus_config.initial_prompt
+        print(f"Sending initial prompt to {model.model_id}.")
+    else:
+        # Build the improvement conversation.
+        conversation = build_improvement_conversation(consensus_config, aggregated_response)
+        print(f"Sending improvement prompt to {model.model_id}.")
+
+    payload = {
+        "model": model.model_id,
+        "messages": conversation,
+        "max_tokens": model.max_tokens,
+        "temperature": model.temperature,
+    }
+    response = await client.send_chat_completion(payload)
+    text = parse_chat_response(response)
+    print(f"{model.model_id} has provided a new response.")
+
+    return model.model_id, text
+
+
+async def send_round(
+    client: AsyncOpenRouterClient,
     consensus_config: ConsensusConfig,
     aggregated_response: str = None,
 ) -> dict:
     """
-    Sends a round of chat completion requests for all models.
-    If `aggregated_response` is not provided, the initial prompt is used.
+    Asynchronously sends a round of chat completion requests for all models.
 
-    :param client: An instance of OpenRouterClient.
+    :param client: An instance of an asynchronous OpenRouter client.
     :param consensus_config: An instance of ConsensusConfig.
-    :param aggregated_response: The aggregated consensus from the previous round (or None).
+    :param aggregated_response: The aggregated consensus response from the previous round (or None).
     :return: A dictionary mapping model IDs to their response texts.
     """
-    responses = {}
-    for model in consensus_config.models:
-        if aggregated_response is None:
-            # For the initial round, use the initial conversation.
-            conversation = consensus_config.initial_prompt
-            print(f"Sending initial prompt to {model.model_id}.")
-        else:
-            # For improvement rounds, build an updated conversation.
-            conversation = build_improvement_conversation(consensus_config, aggregated_response)
-            print(f"Sending improvement prompt to {model.model_id}.")
-        responses[model.model_id] = send_prompt(client, model, conversation)
-    return responses
+    tasks = [
+        get_response_for_model(client, consensus_config, model, aggregated_response)
+        for model in consensus_config.models
+    ]
+    results = await asyncio.gather(*tasks)
+    return {model_id: text for model_id, text in results}

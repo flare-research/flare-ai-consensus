@@ -1,4 +1,4 @@
-from src.router.async_client import AsyncOpenRouterClient
+from src.router.client import AsyncOpenRouterClient
 
 async def send_completion(client: AsyncOpenRouterClient, payload: dict) -> dict:
     """

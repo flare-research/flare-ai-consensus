@@ -77,3 +77,9 @@ When running the `default` mode, a set of predefined prompts will be used. In th
 ## Consensus Learning
 
 The input parameters for running a single-node multi-model instance of Consensus Learning through OpenRouter are specified within `src/input.json`.
+
+To run the algorithm use:
+
+```bash
+uv run python -m src.main
+```

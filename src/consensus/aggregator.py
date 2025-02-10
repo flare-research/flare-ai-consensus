@@ -1,6 +1,8 @@
 from src.consensus.config import AggregatorConfig
-from src.router.client import OpenRouterClient
-from src.router.async_client import AsyncOpenRouterClient
+from src.router.client import (
+    OpenRouterClient,
+    AsyncOpenRouterClient
+)
 
 
 def concatenate_aggregator(responses: dict) -> str:
@@ -49,4 +51,37 @@ def centralized_llm_aggregator(
     aggregated_text = (
         response.get("choices", [])[0].get("message", {}).get("content", "")
     )
+    return aggregated_text
+
+
+async def async_centralized_llm_aggregator(
+    client: AsyncOpenRouterClient,
+    aggregator_config: AggregatorConfig,
+    aggregated_responses: str,
+) -> str:
+    """
+    Use a centralized LLM (via an async client) to combine responses.
+
+    :param client: An asynchronous OpenRouter client.
+    :param aggregator_config: An instance of AggregatorConfig.
+    :param aggregated_responses: A string containing aggregated responses from individual models.
+    :return: The aggregator's combined response as a string.
+    """
+    messages = []
+    messages.extend(aggregator_config.context)
+    messages.append({
+        "role": "system",
+        "content": f"Aggregated responses:\n{aggregated_responses}"
+    })
+    messages.extend(aggregator_config.prompt)
+
+    payload = {
+        "model": aggregator_config.model.model_id,
+        "messages": messages,
+        "max_tokens": aggregator_config.model.max_tokens,
+        "temperature": aggregator_config.model.temperature,
+    }
+
+    response = await client.send_chat_completion(payload)
+    aggregated_text = response.get("choices", [])[0].get("message", {}).get("content", "")
     return aggregated_text

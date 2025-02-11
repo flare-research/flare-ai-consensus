@@ -15,7 +15,7 @@ def concatenate_aggregator(responses: dict) -> str:
 def centralized_llm_aggregator(
     client: OpenRouterClient,
     aggregator_config: AggregatorConfig,
-    aggregated_responses: str,
+    aggregated_responses: dict,
 ) -> str:
     """Use a centralized LLM  to combine responses.
 
@@ -29,8 +29,9 @@ def centralized_llm_aggregator(
     messages.extend(aggregator_config.context)
 
     # Add a system message with the aggregated responses.
+    aggregated_str = concatenate_aggregator(aggregated_responses)
     messages.append(
-        {"role": "system", "content": f"Aggregated responses:\n{aggregated_responses}"}
+        {"role": "system", "content": f"Aggregated responses:\n{aggregated_str}"}
     )
 
     # Add the aggregator prompt

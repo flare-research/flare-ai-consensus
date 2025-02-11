@@ -83,3 +83,12 @@ To run the algorithm use:
 ```bash
 uv run python -m src.main
 ```
+
+## References and Potential Directions
+
+* Mixture-of-Agents (MoA) [github reposiroty](https://github.com/togethercomputer/MoA) and the original paper [arXiv:2406.04692](https://arxiv.org/abs/2406.04692): iterative aggregation of model responses.
+* Chain of Thought prompting techniques: a linear problem solving approach where each step builds upon the previous one.
+* LLM-Blender introduced in [arXiv:2306.02561](https://arxiv.org/abs/2306.02561): its PairRanker achieves a reranking of outputs by performing pairwise comparisons through a *cross-attention encoder* to select the best one.
+The best candidates are then concatenated with the initial input.
+* Centralized router: another possibility is to train a *router* that predicts the best-performing model from a fixed set of LLMs, for a given input.
+See *e.g.* [arXiv:2311.08692](https://arxiv.org/abs/2311.08692), [arXiv:2309:15789](https://arxiv.org/pdf/2309.15789)

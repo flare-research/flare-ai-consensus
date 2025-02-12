@@ -22,7 +22,7 @@ dev = [
 ]
 
 [project.scripts]
-start = "main:main"
+start-consensus = "flare_ai_consensus.main:main"
 
 [build-system]
 requires = ["hatchling"]

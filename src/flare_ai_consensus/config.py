@@ -32,5 +32,5 @@ config = Config(
     open_router_base_url=load_env_var("OPENROUTER_BASE_URL"),
     open_router_api_key=load_env_var("OPENROUTER_API_KEY"),
     data_path=create_path("data"),
-    input_path=create_path("src"),
+    input_path=create_path("flare_ai_consensus"),
 )

@@ -1,6 +1,6 @@
-from src.config import config
-from src.router.client import OpenRouterClient
-from src.utils.saver import save_json
+from flare_ai_consensus.config import config
+from flare_ai_consensus.router.client import OpenRouterClient
+from flare_ai_consensus.utils.saver import save_json
 
 
 def get_models(client: OpenRouterClient) -> dict:

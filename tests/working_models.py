@@ -1,9 +1,14 @@
 import asyncio
-from src.config import config
-from src.router.client import AsyncOpenRouterClient
-from src.utils.loader import load_json
-from src.utils.saver import save_json
-from src.consensus.config import ModelConfig
+
+import structlog
+
+from flare_ai_consensus.config import config
+from flare_ai_consensus.consensus.config import ModelConfig
+from flare_ai_consensus.router.client import AsyncOpenRouterClient
+from flare_ai_consensus.utils.loader import load_json
+from flare_ai_consensus.utils.saver import save_json
+
+logger = structlog.get_logger(__name__)
 
 
 async def _test_model_completion(
@@ -17,10 +22,12 @@ async def _test_model_completion(
     Asynchronously sends a test request for a model using the specified API endpoint.
 
     :param client: An instance of AsyncOpenRouterClient.
-    :param model: A dict representing a model (expected to have keys "id", "max_tokens", "temperature").
+    :param model: A dict representing a model (expected to have keys
+        "id", "max_tokens", "temperature").
     :param test_prompt: The prompt to test.
     :param api_endpoint: Either "completion" or "chat_completion".
-    :return: A tuple (model, works) where works is True if the API call succeeded without an error.
+    :return: A tuple (model, works) where works is True if the API call
+        succeeded without an error.
     """
     model_id = model.get("id")
     if not model_id:
@@ -44,7 +51,8 @@ async def _test_model_completion(
         }
         send_func = client.send_chat_completion
     else:
-        raise ValueError(f"Unsupported api_endpoint: {api_endpoint}")
+        msg = f"Unsupported api_endpoint: {api_endpoint}"
+        raise ValueError(msg)
 
     # Introduce a delay
     await asyncio.sleep(delay)
@@ -52,16 +60,19 @@ async def _test_model_completion(
     try:
         response = await send_func(payload)
         if "error" not in response:
-            print(f"Model {model_id} works with {api_endpoint}!")
+            logger.info("model works", model_id=model_id, api_endpoint=api_endpoint)
             return (model, True)
-        else:
-            error_info = response.get("error", {})
-            print(
-                f"Model {model_id} returned error in {api_endpoint}: {error_info.get('message', 'Unknown error')}"
-            )
-            return (model, False)
-    except Exception as e:
-        print(f"Error testing model {model_id} with {api_endpoint}: {e}")
+        error_info = response.get("error", {})
+        logger.error(
+            "testing model",
+            model_id=model_id,
+            api_endpoint=api_endpoint,
+            error=error_info.get("message", "Unknown error"),
+        )
+    except Exception:
+        logger.exception("testing model", model_id=model_id, api_endpoint=api_endpoint)
+        return (model, False)
+    else:
         return (model, False)
 
 
@@ -72,8 +83,9 @@ async def filter_working_models(
     api_endpoint: str,
 ) -> list:
     """
-    Asynchronously tests each model in free_models with the given test prompt and API endpoint,
-    returning only those models that respond without an error.
+    Asynchronously tests each model in free_models with the given test
+    prompt and API endpoint returning only those models that respond
+    without an error.
 
     :param client: An instance of AsyncOpenRouterClient.
     :param free_models: A list of model dictionaries.
@@ -87,13 +99,12 @@ async def filter_working_models(
     ]
     results = await asyncio.gather(*tasks, return_exceptions=True)
     # Filter out any exceptions and only keep models where works is True.
-    valid_models = [
+    return [
         model
         for result in results
         if not isinstance(result, Exception) and result[1]
         for model in [result[0]]
     ]
-    return valid_models
 
 
 async def main() -> None:
@@ -116,7 +127,11 @@ async def main() -> None:
             config.data_path / f"free_working_{endpoint}_models.json"
         )
         save_json({"data": working_models}, completion_output_file)
-        print(f"\nWorking {endpoint} models saved to {completion_output_file}.\n")
+        logger.info(
+            "working models saved",
+            endpoint=endpoint,
+            completion_output_file=completion_output_file,
+        )
 
     await client.close()
 

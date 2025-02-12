@@ -1,4 +1,4 @@
-from src.router.client import OpenRouterClient
+from flare_ai_consensus.router.client import OpenRouterClient
 
 
 def send_completion(client: OpenRouterClient, payload: dict) -> dict:

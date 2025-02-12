@@ -1,10 +1,15 @@
 import argparse
 
-from src.config import config
-from src.router.client import OpenRouterClient
-from src.utils.saver import save_json
-from src.router import requests
+import structlog
 
+from flare_ai_consensus.config import config
+from flare_ai_consensus.router import (
+    requests,  # This module should expose send_chat_completion
+)
+from flare_ai_consensus.router.client import OpenRouterClient
+from flare_ai_consensus.utils.saver import save_json
+
+logger = structlog.get_logger(__name__)
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -16,7 +21,8 @@ def parse_arguments() -> argparse.Namespace:
         type=str,
         choices=["default", "interactive"],
         default="default",
-        help="Run in 'default' mode with predefined messages or 'interactive' mode for conversation.",
+        help="Run in 'default' mode with predefined messages"
+        "or 'interactive' mode for conversation.",
     )
     return parser.parse_args()
 
@@ -41,14 +47,17 @@ def default_mode(
             "temperature": 0.7,
         }
         try:
-            print(f"\nIteration {i + 1}: Sending conversation to model {model_id} ...")
+            logger.info("sending conversation", model_id=model_id, iteration=i + 1)
             response = requests.send_chat_completion(client, payload)
             # Extract the assistant's response.
             assistant_response = (
                 response.get("choices", [])[0].get("message", {}).get("content", "")
             )
-            print(f"Assistant Response (Iteration {i + 1}):")
-            print(assistant_response)
+            logger.info(
+                "assistant response",
+                iteration=i + 1,
+                assistant_response=assistant_response,
+            )
 
             # Append the assistant's response to the conversation history.
             conversation.append({"role": "assistant", "content": assistant_response})
@@ -56,25 +65,25 @@ def default_mode(
             # Ask for improved response
             if i < num_iterations - 1:
                 conversation.append({"role": "user", "content": improvement_prompt})
-        except Exception as e:
-            print(f"Error for model {model_id} in iteration {i + 1}: {e}")
+        except Exception:
+            logger.exception("error", model_id=model_id, iteration=i + 1)
             break
 
     # Save the final conversation to a file.
     output_file = config.data_path / "chat_response.json"
     save_json({"conversation": conversation}, output_file)
-    print(f"\nFinal conversation saved to {output_file}")
+    logger.info("final conversation saved", output_file=output_file)
 
 
 def interactive_mode(client: OpenRouterClient, model_id: str) -> None:
     """Run the chat in interactive mode."""
     conversation = []
-    print("Interactive mode. Type 'exit' to quit.")
+    print("Interactive mode. Type 'exit' to quit.")  # noqa: T201
 
     while True:
         user_input = input("\nEnter your 'user' prompt: ")
         if user_input.strip().lower() == "exit":
-            print("Exiting interactive mode.")
+            print("Exiting interactive mode.")  # noqa: T201
             break
 
         conversation.append({"role": "user", "content": user_input})
@@ -91,11 +100,11 @@ def interactive_mode(client: OpenRouterClient, model_id: str) -> None:
             assistant_msg = (
                 response.get("choices", [])[0].get("message", {}).get("content", "")
             )
-            print("\nAssistant:")
-            print(assistant_msg)
+            print("\nAssistant:")  # noqa: T201
+            print(assistant_msg)  # noqa: T201
             conversation.append({"role": "assistant", "content": assistant_msg})
-        except Exception as e:
-            print(f"Error for model {model_id}: {e}")
+        except Exception as e:  # noqa: BLE001
+            print(f"Error for model {model_id}: {e}")  # noqa: T201
 
 
 def main() -> None:
@@ -113,11 +122,13 @@ def main() -> None:
         initial_conversation = [
             {
                 "role": "system",
-                "content": "You are an expert on Pokemon. Provide concise and insightful answers.",
+                "content": "You are an expert on Pokemon. "
+                "Provide concise and insightful answers.",
             },
             {
                 "role": "user",
-                "content": "Who is the second best Pokemon trainer in the original 'Pokemon the Series'?",
+                "content": "Who is the second best Pokemon trainer"
+                "in the original 'Pokemon the Series'?",
             },
         ]
         improvement_prompt = (
@@ -134,7 +145,7 @@ def main() -> None:
     elif args.mode == "interactive":
         interactive_mode(client, model_id)
     else:
-        print("Invalid mode. Please choose 'default' or 'interactive'.")
+        logger.info("invalid mode: choose 'default' or 'interactive'")
 
 
 if __name__ == "__main__":

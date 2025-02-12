@@ -1,13 +1,17 @@
 import asyncio
 
-from src.config import config
-from src.consensus import aggregator, consensus
-from src.consensus.config import ConsensusConfig
-from src.router.client import AsyncOpenRouterClient
-from src.utils import (
-    saver,
+import structlog
+
+from flare_ai_consensus.config import config
+from flare_ai_consensus.consensus import aggregator, consensus
+from flare_ai_consensus.consensus.config import ConsensusConfig
+from flare_ai_consensus.router.client import AsyncOpenRouterClient
+from flare_ai_consensus.utils import (
     loader,
+    saver,
 )
+
+logger = structlog.get_logger(__name__)
 
 
 async def run_consensus(
@@ -22,17 +26,17 @@ async def run_consensus(
     :param consensus_config: An instance of ConsensusConfig.
     """
     response_data = {}
-    response_data['initial_conversation'] = consensus_config.initial_prompt
+    response_data["initial_conversation"] = consensus_config.initial_prompt
 
     # Step 1: Initial round.
     responses = await consensus.send_round(client, consensus_config)
     aggregated_response = await aggregator.async_centralized_llm_aggregator(
         client, consensus_config.aggregator_config, responses
     )
-    print("\nInitial responses have been aggregated.")
+    logger.info("initial response aggregation complete")
 
-    response_data['iteration_0'] = responses
-    response_data['aggregate_0'] = aggregated_response
+    response_data["iteration_0"] = responses
+    response_data["aggregate_0"] = aggregated_response
 
     # Step 2: Improvement rounds.
     for i in range(consensus_config.iterations):
@@ -42,10 +46,10 @@ async def run_consensus(
         aggregated_response = await aggregator.async_centralized_llm_aggregator(
             client, consensus_config.aggregator_config, responses
         )
-        print(f"\nThe responses have been aggregated after iteration {i + 1}.")
+        logger.info("responses aggregated", iteration=i + 1)
 
-        response_data[f'iteration_{i+1}'] = responses
-        response_data[f'aggregate_{i+1}'] = aggregated_response
+        response_data[f"iteration_{i + 1}"] = responses
+        response_data[f"aggregate_{i + 1}"] = aggregated_response
 
     # Step 3: Save final consensus.
     output_file = config.data_path / "final_consensus.json"
@@ -53,7 +57,7 @@ async def run_consensus(
         response_data,
         output_file,
     )
-    print(f"\nFinal consensus saved to {output_file}.")
+    logger.info("saved consensus", output_file=output_file)
 
     # Close the async client to release resources.
     await client.close()

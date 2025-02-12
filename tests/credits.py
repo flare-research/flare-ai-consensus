@@ -1,11 +1,15 @@
-from src.config import config
-from src.router.client import OpenRouterClient
+import structlog
+
+from flare_ai_consensus.config import config
+from flare_ai_consensus.router.client import OpenRouterClient
+
+logger = structlog.get_logger(__name__)
 
 
 def get_credits(client: OpenRouterClient) -> None:
     # Retrieve available credits
     current_credits = client.get_credits()
-    print(current_credits)
+    logger.info("current credits", current_credits=current_credits)
 
 
 if __name__ == "__main__":

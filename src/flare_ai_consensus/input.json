@@ -19,11 +19,11 @@
     "initial_conversation": [
         {
             "role": "system",
-            "content": "You are an expert on in chemistry."
+            "content": "You are an expert on urban infrastructure."
         },
         {
             "role": "user",
-            "content": "Why is heat emitted in a freshly painted room?"
+            "content": "Propose a very simple strategy for reducing urban traffic congestion using technology and policy interventions."
         }
     ],
     "aggregator": [
@@ -33,7 +33,6 @@
                 "max_tokens": 200,
                 "temperature": 0.7
             },
-            "approach": "centralized-llm",
             "aggregator_context": [
                 {
                     "role": "system",
@@ -43,7 +42,7 @@
             "aggregator_prompt": [
                 {
                     "role": "user",
-                    "content": "Combine the previously provided responses into a single one based on their common features."
+                    "content": "You have been provided with a set of responses from various open-source models to the latest user query. Your task is to synthesize these responses into a single, high-quality response. It is crucial to critically evaluate the information provided in these responses, recognizing that some of it may be biased or incorrect. Your response should not simply replicate the given answers but should offer a refined, accurate, and comprehensive reply to the instruction. Ensure your response is well-structured, coherent, and adheres to the highest standards of accuracy and reliability. Ensure that the length of your response is similar to that of the other responses."
                 }
             ]
         }

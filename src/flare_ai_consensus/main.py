@@ -25,12 +25,18 @@ async def run_consensus(
     :param async_client: An instance of an asynchronous OpenRouterClient.
     :param consensus_config: An instance of ConsensusConfig.
     """
+    response_data = {}
+    response_data['initial_conversation'] = consensus_config.initial_prompt
+
     # Step 1: Initial round.
     responses = await consensus.send_round(client, consensus_config)
     aggregated_response = await aggregator.async_centralized_llm_aggregator(
         client, consensus_config.aggregator_config, responses
     )
     logger.info("initial response aggregation complete")
+
+    response_data['iteration_0'] = responses
+    response_data['aggregate_0'] = aggregated_response
 
     # Step 2: Improvement rounds.
     for i in range(consensus_config.iterations):
@@ -40,12 +46,15 @@ async def run_consensus(
         aggregated_response = await aggregator.async_centralized_llm_aggregator(
             client, consensus_config.aggregator_config, responses
         )
-        logger.info("responses aggregated", iteration=i + 1)
+        print(f"\nThe responses have been aggregated after iteration {i + 1}.")
+
+        response_data[f'iteration_{i+1}'] = responses
+        response_data[f'aggregate_{i+1}'] = aggregated_response
 
     # Step 3: Save final consensus.
     output_file = config.data_path / "final_consensus.json"
     saver.save_json(
-        {"aggregated_response": aggregated_response, "responses": responses},
+        response_data,
         output_file,
     )
     logger.info("saved consensus", output_file=output_file)

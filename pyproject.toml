@@ -13,6 +13,7 @@ dependencies = [
     "pandas>=2.2.3",
     "python-dotenv>=1.0.1",
     "requests>=2.32.3",
+    "structlog>=25.1.0",
 ]
 
 [dependency-groups]
@@ -33,7 +34,7 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D203", "D212", "COM812", "D", "S105", "ANN401", "T201", "ISC003"]
+ignore = ["D203", "D212", "COM812", "D", "S105", "ANN401", "ISC003"]
 
 [tool.ruff.lint.extend-per-file-ignores]
 "tests/**/*.py" = ["S101", "ARG"]

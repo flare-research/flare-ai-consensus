@@ -1,10 +1,14 @@
 import asyncio
 
+import structlog
+
 from flare_ai_consensus.config import config
 from flare_ai_consensus.consensus.config import ModelConfig
 from flare_ai_consensus.router.client import AsyncOpenRouterClient
 from flare_ai_consensus.utils.loader import load_json
 from flare_ai_consensus.utils.saver import save_json
+
+logger = structlog.get_logger(__name__)
 
 
 async def _test_model_completion(
@@ -56,15 +60,17 @@ async def _test_model_completion(
     try:
         response = await send_func(payload)
         if "error" not in response:
-            print(f"Model {model_id} works with {api_endpoint}!")
+            logger.info("model works", model_id=model_id, api_endpoint=api_endpoint)
             return (model, True)
         error_info = response.get("error", {})
-        print(
-            f"Model {model_id} returned error in {api_endpoint}: "
-            f"{error_info.get('message', 'Unknown error')}"
+        logger.error(
+            "testing model",
+            model_id=model_id,
+            api_endpoint=api_endpoint,
+            error=error_info.get("message", "Unknown error"),
         )
-    except Exception as e:  # noqa: BLE001
-        print(f"Error testing model {model_id} with {api_endpoint}: {e}")
+    except Exception:
+        logger.exception("testing model", model_id=model_id, api_endpoint=api_endpoint)
         return (model, False)
     else:
         return (model, False)
@@ -121,7 +127,11 @@ async def main() -> None:
             config.data_path / f"free_working_{endpoint}_models.json"
         )
         save_json({"data": working_models}, completion_output_file)
-        print(f"\nWorking {endpoint} models saved to {completion_output_file}.\n")
+        logger.info(
+            "working models saved",
+            endpoint=endpoint,
+            completion_output_file=completion_output_file,
+        )
 
     await client.close()
 

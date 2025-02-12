@@ -1,9 +1,13 @@
 import argparse
 
+import structlog
+
 from flare_ai_consensus.config import config
 from flare_ai_consensus.router import requests
 from flare_ai_consensus.router.client import OpenRouterClient
 from flare_ai_consensus.utils.saver import save_json
+
+logger = structlog.get_logger(__name__)
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -58,7 +62,7 @@ def start_chat(args: argparse.Namespace) -> None:
     )
 
     try:
-        print(f"Sending prompt to model {model_id} ...")
+        logger.info("sending prompt", model_id=model_id)
         response = send_prompt(client, model_id, prompt)
 
         # Save the full JSON response to a file.
@@ -66,9 +70,11 @@ def start_chat(args: argparse.Namespace) -> None:
         save_json(response, output_file)
 
         # Print response
-        print(response.get("choices", [])[0].get("text", ""))
-    except Exception as e:  # noqa: BLE001
-        print(f"Error for model {model_id}: {e}")
+        response_text = response.get("choices", [])[0].get("text", "")
+        logger.info("model response", response_text=response_text)
+
+    except Exception as e:
+        logger.exception("error", model_id=model_id, error=e)
 
 
 def main() -> None:

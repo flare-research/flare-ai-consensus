@@ -1,8 +1,12 @@
 import asyncio
 
+import structlog
+
 from flare_ai_consensus.consensus.config import ConsensusConfig, ModelConfig
 from flare_ai_consensus.router.client import AsyncOpenRouterClient
 from flare_ai_consensus.utils.parser import parse_chat_response
+
+logger = structlog.get_logger(__name__)
 
 
 def build_improvement_conversation(
@@ -50,13 +54,13 @@ async def get_response_for_model(
     if aggregated_response is None:
         # Use initial prompt for the first round.
         conversation = consensus_config.initial_prompt
-        print(f"Sending initial prompt to {model.model_id}.")
+        logger.info("sending initial prompt", model_id=model.model_id)
     else:
         # Build the improvement conversation.
         conversation = build_improvement_conversation(
             consensus_config, aggregated_response
         )
-        print(f"Sending improvement prompt to {model.model_id}.")
+        logger.info("sending improvement prompt", model_id=model.model_id)
 
     payload = {
         "model": model.model_id,
@@ -66,8 +70,7 @@ async def get_response_for_model(
     }
     response = await client.send_chat_completion(payload)
     text = parse_chat_response(response)
-    print(f"{model.model_id} has provided a new response.")
-
+    logger.info("new response", model_id=model.model_id, response=text)
     return model.model_id, text
 
 

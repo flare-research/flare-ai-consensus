@@ -1,5 +1,7 @@
 import asyncio
 
+import structlog
+
 from flare_ai_consensus.config import config
 from flare_ai_consensus.consensus import aggregator, consensus
 from flare_ai_consensus.consensus.config import ConsensusConfig
@@ -8,6 +10,8 @@ from flare_ai_consensus.utils import (
     loader,
     saver,
 )
+
+logger = structlog.get_logger(__name__)
 
 
 async def run_consensus(
@@ -26,7 +30,7 @@ async def run_consensus(
     aggregated_response = await aggregator.async_centralized_llm_aggregator(
         client, consensus_config.aggregator_config, responses
     )
-    print("\nInitial responses have been aggregated.")
+    logger.info("initial response aggregation complete")
 
     # Step 2: Improvement rounds.
     for i in range(consensus_config.iterations):
@@ -36,7 +40,7 @@ async def run_consensus(
         aggregated_response = await aggregator.async_centralized_llm_aggregator(
             client, consensus_config.aggregator_config, responses
         )
-        print(f"\nThe responses have been aggregated after iteration {i + 1}:")
+        logger.info("responses aggregated", iteration=i + 1)
 
     # Step 3: Save final consensus.
     output_file = config.data_path / "final_consensus.json"
@@ -44,7 +48,7 @@ async def run_consensus(
         {"aggregated_response": aggregated_response, "responses": responses},
         output_file,
     )
-    print(f"\nFinal consensus saved to {output_file}")
+    logger.info("saved consensus", output_file=output_file)
 
     # Close the async client to release resources.
     await client.close()

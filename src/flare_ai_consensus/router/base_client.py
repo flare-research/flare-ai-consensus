@@ -33,17 +33,18 @@ class BaseClient:
             url=url, params=params, headers=self.headers, timeout=30
         )
 
-        if response.status_code == 200:
+        success_status = 200
+        if response.status_code == success_status:
             return response.json()
-        else:
-            msg = f"Error ({response.status_code}): {response.text}"
-            raise ConnectionError(msg)
+        msg = f"Error ({response.status_code}): {response.text}"
+        raise ConnectionError(msg)
 
     def _post(self, endpoint: str, json_payload: dict) -> dict:
         """
         Make a POST request to the API with a JSON payload and return the JSON response.
 
-        :param endpoint: The API endpoint (should begin with a slash, e.g., "/completions").
+        :param endpoint: The API endpoint (should begin with a slash,
+            e.g., "/completions").
         :param json_payload: The JSON payload to send.
         :return: JSON response as a dictionary.
         """
@@ -52,15 +53,18 @@ class BaseClient:
             url=url, headers=self.headers, json=json_payload, timeout=30
         )
 
-        if response.status_code == 200:
+        success_status = 200
+        if response.status_code == success_status:
             return response.json()
-        else:
-            msg = f"Error ({response.status_code}): {response.text}"
-            raise ConnectionError(msg)
+        msg = f"Error ({response.status_code}): {response.text}"
+        raise ConnectionError(msg)
 
 
 class AsyncBaseClient:
-    """An asynchronous base class to handle HTTP requests and common logic for API interaction."""
+    """
+    An asynchronous base class to handle HTTP requests and
+    common logic for API interaction.
+    """
 
     def __init__(self, base_url: str, api_key: str | None = None) -> None:
         """
@@ -86,28 +90,30 @@ class AsyncBaseClient:
         url = self.base_url + endpoint
         response = await self.client.get(url, params=params, headers=self.headers)
 
-        if response.status_code == 200:
+        success_status = 200
+        if response.status_code == success_status:
             return response.json()
-        else:
-            msg = f"Error ({response.status_code}): {response.text}"
-            raise ConnectionError(msg)
+        msg = f"Error ({response.status_code}): {response.text}"
+        raise ConnectionError(msg)
 
     async def _post(self, endpoint: str, json_payload: dict) -> dict:
         """
-        Make an asynchronous POST request to the API with a JSON payload and return the JSON response.
+        Make an asynchronous POST request to the API with a JSON
+        payload and return the JSON response.
 
-        :param endpoint: The API endpoint (should begin with a slash, e.g., "/completions").
+        :param endpoint: The API endpoint
+            (should begin with a slash, e.g., "/completions").
         :param json_payload: The JSON payload to send.
         :return: JSON response as a dictionary.
         """
         url = self.base_url + endpoint
         response = await self.client.post(url, headers=self.headers, json=json_payload)
 
-        if response.status_code == 200:
+        success_status = 200
+        if response.status_code == success_status:
             return response.json()
-        else:
-            msg = f"Error ({response.status_code}): {response.text}"
-            raise ConnectionError(msg)
+        msg = f"Error ({response.status_code}): {response.text}"
+        raise ConnectionError(msg)
 
     async def close(self) -> None:
         """

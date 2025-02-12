@@ -1,9 +1,11 @@
 import argparse
 
-from src.config import config
-from src.router.client import OpenRouterClient
-from src.utils.saver import save_json
-from src.router import requests  # This module should expose send_chat_completion
+from flare_ai_consensus.config import config
+from flare_ai_consensus.router import (
+    requests,  # This module should expose send_chat_completion
+)
+from flare_ai_consensus.router.client import OpenRouterClient
+from flare_ai_consensus.utils.saver import save_json
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -15,7 +17,8 @@ def parse_arguments() -> argparse.Namespace:
         type=str,
         choices=["default", "interactive"],
         default="default",
-        help="Run in 'default' mode with predefined messages or 'interactive' mode for conversation.",
+        help="Run in 'default' mode with predefined messages"
+        "or 'interactive' mode for conversation.",
     )
     return parser.parse_args()
 
@@ -55,7 +58,7 @@ def default_mode(
             # Ask for improved response
             if i < num_iterations - 1:
                 conversation.append({"role": "user", "content": improvement_prompt})
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"Error for model {model_id} in iteration {i + 1}: {e}")
             break
 
@@ -93,7 +96,7 @@ def interactive_mode(client: OpenRouterClient, model_id: str) -> None:
             print("\nAssistant:")
             print(assistant_msg)
             conversation.append({"role": "assistant", "content": assistant_msg})
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"Error for model {model_id}: {e}")
 
 
@@ -112,11 +115,13 @@ def main() -> None:
         initial_conversation = [
             {
                 "role": "system",
-                "content": "You are an expert on Pokemon. Provide concise and insightful answers.",
+                "content": "You are an expert on Pokemon. "
+                "Provide concise and insightful answers.",
             },
             {
                 "role": "user",
-                "content": "Who is the second best Pokemon trainer in the original 'Pokemon the Series'?",
+                "content": "Who is the second best Pokemon trainer"
+                "in the original 'Pokemon the Series'?",
             },
         ]
         improvement_prompt = (

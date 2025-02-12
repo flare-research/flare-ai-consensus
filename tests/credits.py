@@ -1,5 +1,5 @@
-from src.config import config
-from src.router.client import OpenRouterClient
+from flare_ai_consensus.config import config
+from flare_ai_consensus.router.client import OpenRouterClient
 
 
 def get_credits(client: OpenRouterClient) -> None:

@@ -1,12 +1,12 @@
 import asyncio
 
-from src.config import config
-from src.consensus import aggregator, consensus
-from src.consensus.config import ConsensusConfig
-from src.router.client import AsyncOpenRouterClient
-from src.utils import (
-    saver,
+from flare_ai_consensus.config import config
+from flare_ai_consensus.consensus import aggregator, consensus
+from flare_ai_consensus.consensus.config import ConsensusConfig
+from flare_ai_consensus.router.client import AsyncOpenRouterClient
+from flare_ai_consensus.utils import (
     loader,
+    saver,
 )
 
 

@@ -1,4 +1,4 @@
-from src.router.client import AsyncOpenRouterClient
+from flare_ai_consensus.router.client import AsyncOpenRouterClient
 
 
 async def send_completion(client: AsyncOpenRouterClient, payload: dict) -> dict:
@@ -14,7 +14,8 @@ async def send_completion(client: AsyncOpenRouterClient, payload: dict) -> dict:
 
 async def send_chat_completion(client: AsyncOpenRouterClient, payload: dict) -> dict:
     """
-    Asynchronously send the prompt to the chat completions endpoint for a specific model.
+    Asynchronously send the prompt to the chat completions
+    endpoint for a specific model.
 
     :param client: An instance of AsyncOpenRouterClient.
     :param payload: The JSON payload to send.

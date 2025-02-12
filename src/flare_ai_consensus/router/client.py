@@ -1,4 +1,4 @@
-from src.router.base_client import AsyncBaseClient, BaseClient
+from flare_ai_consensus.router.base_client import AsyncBaseClient, BaseClient
 
 
 class OpenRouterClient(BaseClient):
@@ -8,9 +8,11 @@ class OpenRouterClient(BaseClient):
         """
         Initialize the OpenRouter client.
 
-        The base URL is set to the OpenRouter API endpoint by default, but can be overridden.
+        The base URL is set to the OpenRouter API endpoint by default,
+        but can be overridden.
         :param api_key: Optional API key for authentication.
-        :param base_url: Optional custom base URL. Defaults to "https://openrouter.ai/api/v1"
+        :param base_url: Optional custom base URL.
+            Defaults to "https://openrouter.ai/api/v1"
         """
         if base_url is None:
             base_url = "https://openrouter.ai/api/v1"
@@ -52,7 +54,8 @@ class OpenRouterClient(BaseClient):
         """
         Send a prompt to the completions endpoint.
 
-        The completions endpoint expects a JSON payload with keys like "model" and "prompt".
+        The completions endpoint expects a JSON payload with keys
+        like "model" and "prompt".
         """
         endpoint = "/completions"
         return self._post(endpoint, payload)
@@ -61,7 +64,8 @@ class OpenRouterClient(BaseClient):
         """
         Send a prompt to the chat completions endpoint.
 
-        The payload should include a "model" field and a "messages" array where each message has a "role"
+        The payload should include a "model" field and a "messages"
+        array where each message has a "role"
         (e.g., "user", "assistant", "system") and "content".
         """
         endpoint = "/chat/completions"

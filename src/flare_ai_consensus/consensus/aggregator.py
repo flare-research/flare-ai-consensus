@@ -1,5 +1,5 @@
-from src.consensus.config import AggregatorConfig
-from src.router.client import OpenRouterClient, AsyncOpenRouterClient
+from flare_ai_consensus.consensus.config import AggregatorConfig
+from flare_ai_consensus.router.client import AsyncOpenRouterClient, OpenRouterClient
 
 
 def concatenate_aggregator(responses: dict) -> str:
@@ -21,7 +21,8 @@ def centralized_llm_aggregator(
 
     :param client: An OpenRouterClient instance.
     :param aggregator_config: An instance of AggregatorConfig.
-    :param aggregated_responses: A string containing aggregated responses from individual models.
+    :param aggregated_responses: A string containing aggregated
+        responses from individual models.
     :return: The aggregator's combined response.
     """
     # Build the message list.
@@ -45,10 +46,7 @@ def centralized_llm_aggregator(
 
     # Get aggregated response from the centralized LLM
     response = client.send_chat_completion(payload)
-    aggregated_text = (
-        response.get("choices", [])[0].get("message", {}).get("content", "")
-    )
-    return aggregated_text
+    return response.get("choices", [])[0].get("message", {}).get("content", "")
 
 
 async def async_centralized_llm_aggregator(
@@ -61,7 +59,8 @@ async def async_centralized_llm_aggregator(
 
     :param client: An asynchronous OpenRouter client.
     :param aggregator_config: An instance of AggregatorConfig.
-    :param aggregated_responses: A string containing aggregated responses from individual models.
+    :param aggregated_responses: A string containing aggregated
+        responses from individual models.
     :return: The aggregator's combined response as a string.
     """
     messages = []
@@ -79,7 +78,4 @@ async def async_centralized_llm_aggregator(
     }
 
     response = await client.send_chat_completion(payload)
-    aggregated_text = (
-        response.get("choices", [])[0].get("message", {}).get("content", "")
-    )
-    return aggregated_text
+    return response.get("choices", [])[0].get("message", {}).get("content", "")

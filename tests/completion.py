@@ -1,9 +1,9 @@
 import argparse
 
-from src.config import config
-from src.router import requests
-from src.router.client import OpenRouterClient
-from src.utils.saver import save_json
+from flare_ai_consensus.config import config
+from flare_ai_consensus.router import requests
+from flare_ai_consensus.router.client import OpenRouterClient
+from flare_ai_consensus.utils.saver import save_json
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -14,8 +14,10 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--prompt",
         type=str,
-        default="Who is the second best Pokemon trainer in the original 'Pokemon the Series'?",
-        help="The prompt to send to the model. Enclose it in quotes if it contains spaces.",
+        default="Who is the second best Pokemon trainer in the original"
+        "'Pokemon the Series'?",
+        help="The prompt to send to the model. "
+        "Enclose it in quotes if it contains spaces.",
     )
     parser.add_argument(
         "--model",
@@ -65,7 +67,7 @@ def start_chat(args: argparse.Namespace) -> None:
 
         # Print response
         print(response.get("choices", [])[0].get("text", ""))
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"Error for model {model_id}: {e}")
 
 

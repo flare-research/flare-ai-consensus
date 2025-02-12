@@ -1,9 +1,9 @@
-from src.config import config
-from src.router.client import OpenRouterClient
-from src.utils.openrouter import extract_author
+from flare_ai_consensus.config import config
+from flare_ai_consensus.router.client import OpenRouterClient
+from flare_ai_consensus.utils.openrouter import extract_author
 
 
-def get_model_endpoints(client: OpenRouterClient, author: str, slug: str):
+def get_model_endpoints(client: OpenRouterClient, author: str, slug: str) -> None:
     endpoints = client.get_model_endpoints(author, slug)
     print(endpoints)
 

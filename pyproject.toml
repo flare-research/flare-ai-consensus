@@ -1,7 +1,7 @@
 [project]
 name = "flare-ai-consensus"
 version = "0.1.0"
-description = "Consensus Learning implementation"
+description = "Flare AI SDK template for single-node multi-model Consensus Learning"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

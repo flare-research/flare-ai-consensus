@@ -69,7 +69,7 @@ def start_chat(args: argparse.Namespace) -> None:
         output_file = config.data_path / "response.json"
         save_json(response, output_file)
 
-        # Print response
+        # Log the response
         response_text = response.get("choices", [])[0].get("text", "")
         logger.info("model response", response_text=response_text)
 

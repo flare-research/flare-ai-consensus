@@ -31,7 +31,7 @@ def default_mode(
     client: OpenRouterClient,
     initial_conversation: list[dict],
     model_id: str,
-    num_iterations: str,
+    num_iterations: int,
     improvement_prompt: str,
 ) -> None:
     """Run the chat completion with a predefined set of messages."""

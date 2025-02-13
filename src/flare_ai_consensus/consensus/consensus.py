@@ -39,8 +39,8 @@ async def get_response_for_model(
     client: AsyncOpenRouterClient,
     consensus_config: ConsensusConfig,
     model: ModelConfig,
-    aggregated_response: str,
-) -> tuple[str, str]:
+    aggregated_response: str | None,
+) -> tuple[str | None, str]:
     """
     Asynchronously sends a chat completion request for a given model.
 
@@ -51,7 +51,7 @@ async def get_response_for_model(
     :param model: A ModelConfig instance.
     :return: A tuple of (model_id, response text).
     """
-    if aggregated_response is None:
+    if not aggregated_response:
         # Use initial prompt for the first round.
         conversation = consensus_config.initial_prompt
         logger.info("sending initial prompt", model_id=model.model_id)

@@ -3,9 +3,9 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class ModelConfig:
-    model_id: str
-    max_tokens: int
-    temperature: float
+    model_id: str | None = None
+    max_tokens: int = 50
+    temperature: float = 0.7
 
 
 @dataclass(frozen=True)

@@ -53,7 +53,7 @@ def centralized_llm_aggregator(
 async def async_centralized_llm_aggregator(
     client: AsyncOpenRouterClient,
     aggregator_config: AggregatorConfig,
-    aggregated_responses: str,
+    aggregated_responses: dict,
 ) -> str:
     """
     Use a centralized LLM (via an async client) to combine responses.

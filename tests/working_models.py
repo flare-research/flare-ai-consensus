@@ -18,7 +18,6 @@ async def _test_model_completion(
     api_endpoint: str,
     delay: float = 1.0,
 ) -> tuple[ModelConfig, bool]:
-) -> tuple[ModelConfig, bool]:
     """
     Asynchronously sends a test request for a model using the specified API endpoint.
 
@@ -47,8 +46,6 @@ async def _test_model_completion(
         payload = {
             "model": model_id,
             "messages": [{"role": "user", "content": test_prompt}],
-            "max_tokens": model.max_tokens,
-            "temperature": model.temperature,
             "max_tokens": model.max_tokens,
             "temperature": model.temperature,
         }

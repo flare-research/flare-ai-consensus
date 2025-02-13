@@ -4,10 +4,6 @@ import structlog
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 logger = structlog.get_logger(__name__)
-import structlog
-from pydantic_settings import BaseSettings, SettingsConfigDict
-
-logger = structlog.get_logger(__name__)
 
 
 def create_path(folder_name: str) -> Path:

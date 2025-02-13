@@ -33,7 +33,7 @@ async def run_consensus(
     aggregated_response = await aggregator.async_centralized_llm_aggregator(
         client, consensus_config.aggregator_config, responses
     )
-    logger.info("initial response aggregation complete")
+    logger.info("initial response aggregation complete", aggregated_response=aggregated_response)
 
     response_data["iteration_0"] = responses
     response_data["aggregate_0"] = aggregated_response
@@ -46,7 +46,7 @@ async def run_consensus(
         aggregated_response = await aggregator.async_centralized_llm_aggregator(
             client, consensus_config.aggregator_config, responses
         )
-        logger.info("responses aggregated", iteration=i + 1)
+        logger.info("responses aggregated", iteration=i + 1, aggregated_response=aggregated_response)
 
         response_data[f"iteration_{i + 1}"] = responses
         response_data[f"aggregate_{i + 1}"] = aggregated_response

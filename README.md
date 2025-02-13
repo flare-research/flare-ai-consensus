@@ -27,6 +27,7 @@ For formatting and linting use:
 ```bash
 uv run ruff format
 uv run ruff check
+uv run pyright
 ```
 
 ### OpenAI API Key
@@ -47,11 +48,14 @@ uv run python -m tests.models
 ```
 
 This will generate two `json` files in a `data` folder within the root directory.
-To trim this list down to models that work correctly, run:
+Note that free models are subject to the following rate limits:
 
-```bash
-uv run python -m tests.working_models
-```
+* 20 requests per minute.
+* 200 requests per day.
+
+All models should function correctly, in principle, but some models may return errors.
+If you wish to trim the list of free models down to working models, you can run the `tests/working_models.py` script.
+Note, however, that this will bring you closer to the daily rate limit on the free models since there are around 27 models listed as free.
 
 The two main endpoints for interacting with the models are:
 
@@ -75,6 +79,7 @@ uv run python -m tests.chat_completion --mode default
 
 When running the `default` mode, a set of predefined prompts will be used.
 In the `interactive` mode you can manually enter new `user` prompts, with any previous model responses being kept as `assistant` responses.
+To exit the `interactive` mode simply write `exit`.
 
 ## Consensus Learning
 
@@ -97,7 +102,7 @@ The input parameters for running a single-node multi-model instance of Consensus
 Once the `src/input.json` file is set, to run the algorithm use:
 
 ```bash
-uv run python -m src.main
+uv run start-consensus
 ```
 
 ## References and Potential Directions

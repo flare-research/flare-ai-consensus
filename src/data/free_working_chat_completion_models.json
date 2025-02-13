@@ -97,35 +97,11 @@
             "per_request_limits": null
         },
         {
-            "id": "mistralai/mistral-small-24b-instruct-2501:free",
-            "name": "Mistral: Mistral Small 3 (free)",
-            "created": 1738255409,
-            "description": "Mistral Small 3 is a 24B-parameter language model optimized for low-latency performance across common AI tasks. Released under the Apache 2.0 license, it features both pre-trained and instruction-tuned versions designed for efficient local deployment.\n\nThe model achieves 81% accuracy on the MMLU benchmark and performs competitively with larger models like Llama 3.3 70B and Qwen 32B, while operating at three times the speed on equivalent hardware. [Read the blog post about the model here.](https://mistral.ai/news/mistral-small-3/)",
-            "context_length": 32000,
-            "architecture": {
-                "modality": "text->text",
-                "tokenizer": "Mistral",
-                "instruct_type": null
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 32000,
-                "max_completion_tokens": null,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
             "id": "deepseek/deepseek-r1-distill-llama-70b:free",
             "name": "DeepSeek: R1 Distill Llama 70B (free)",
             "created": 1737663169,
             "description": "DeepSeek R1 Distill Llama 70B is a distilled large language model based on [Llama-3.3-70B-Instruct](/meta-llama/llama-3.3-70b-instruct), using outputs from [DeepSeek R1](/deepseek/deepseek-r1). The model combines advanced distillation techniques to achieve high performance across multiple benchmarks, including:\n\n- AIME 2024 pass@1: 70.0\n- MATH-500 pass@1: 94.5\n- CodeForces Rating: 1633\n\nThe model leverages fine-tuning from DeepSeek R1's outputs, enabling competitive performance comparable to larger frontier models.",
-            "context_length": 128000,
+            "context_length": 8192,
             "architecture": {
                 "modality": "text->text",
                 "tokenizer": "Llama3",
@@ -138,8 +114,8 @@
                 "request": "0"
             },
             "top_provider": {
-                "context_length": 128000,
-                "max_completion_tokens": null,
+                "context_length": 8192,
+                "max_completion_tokens": 32768,
                 "is_moderated": false
             },
             "per_request_limits": null
@@ -221,7 +197,7 @@
             "name": "DeepSeek: DeepSeek V3 (free)",
             "created": 1735241320,
             "description": "DeepSeek-V3 is the latest model from the DeepSeek team, building upon the instruction following and coding abilities of the previous versions. Pre-trained on nearly 15 trillion tokens, the reported evaluations reveal that the model outperforms other open-source models and rivals leading closed-source models.\n\nFor model details, please visit [the DeepSeek-V3 repo](https://github.com/deepseek-ai/DeepSeek-V3) for more information, or see the [launch announcement](https://api-docs.deepseek.com/news/news1226).",
-            "context_length": 131072,
+            "context_length": 128000,
             "architecture": {
                 "modality": "text->text",
                 "tokenizer": "DeepSeek",
@@ -234,7 +210,7 @@
                 "request": "0"
             },
             "top_provider": {
-                "context_length": 131072,
+                "context_length": 128000,
                 "max_completion_tokens": null,
                 "is_moderated": false
             },
@@ -331,7 +307,7 @@
             },
             "top_provider": {
                 "context_length": 131072,
-                "max_completion_tokens": null,
+                "max_completion_tokens": 2048,
                 "is_moderated": false
             },
             "per_request_limits": null
@@ -385,30 +361,6 @@
             "per_request_limits": null
         },
         {
-            "id": "meta-llama/llama-3.2-11b-vision-instruct:free",
-            "name": "Meta: Llama 3.2 11B Vision Instruct (free)",
-            "created": 1727222400,
-            "description": "Llama 3.2 11B Vision is a multimodal model with 11 billion parameters, designed to handle tasks combining visual and textual data. It excels in tasks such as image captioning and visual question answering, bridging the gap between language generation and visual reasoning. Pre-trained on a massive dataset of image-text pairs, it performs well in complex, high-accuracy image analysis.\n\nIts ability to integrate visual understanding with language processing makes it an ideal solution for industries requiring comprehensive visual-linguistic AI applications, such as content creation, AI-driven customer service, and research.\n\nClick here for the [original model card](https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/MODEL_CARD_VISION.md).\n\nUsage of this model is subject to [Meta's Acceptable Use Policy](https://www.llama.com/llama3/use-policy/).",
-            "context_length": 131072,
-            "architecture": {
-                "modality": "text+image->text",
-                "tokenizer": "Llama3",
-                "instruct_type": "llama3"
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 131072,
-                "max_completion_tokens": 2048,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
             "id": "google/gemini-flash-1.5-8b-exp",
             "name": "Google: Gemini Flash 1.5 8B Experimental",
             "created": 1724803200,
@@ -428,54 +380,6 @@
             "top_provider": {
                 "context_length": 1000000,
                 "max_completion_tokens": 8192,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
-            "id": "mistralai/mistral-nemo:free",
-            "name": "Mistral: Mistral Nemo (free)",
-            "created": 1721347200,
-            "description": "A 12B parameter model with a 128k token context length built by Mistral in collaboration with NVIDIA.\n\nThe model is multilingual, supporting English, French, German, Spanish, Italian, Portuguese, Chinese, Japanese, Korean, Arabic, and Hindi.\n\nIt supports function calling and is released under the Apache 2.0 license.",
-            "context_length": 128000,
-            "architecture": {
-                "modality": "text->text",
-                "tokenizer": "Mistral",
-                "instruct_type": "mistral"
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 128000,
-                "max_completion_tokens": 128000,
-                "is_moderated": false
-            },
-            "per_request_limits": null
-        },
-        {
-            "id": "qwen/qwen-2-7b-instruct:free",
-            "name": "Qwen 2 7B Instruct (free)",
-            "created": 1721088000,
-            "description": "Qwen2 7B is a transformer-based model that excels in language understanding, multilingual capabilities, coding, mathematics, and reasoning.\n\nIt features SwiGLU activation, attention QKV bias, and group query attention. It is pretrained on extensive data with supervised finetuning and direct preference optimization.\n\nFor more details, see this [blog post](https://qwenlm.github.io/blog/qwen2/) and [GitHub repo](https://github.com/QwenLM/Qwen2).\n\nUsage of this model is subject to [Tongyi Qianwen LICENSE AGREEMENT](https://huggingface.co/Qwen/Qwen1.5-110B-Chat/blob/main/LICENSE).",
-            "context_length": 8192,
-            "architecture": {
-                "modality": "text->text",
-                "tokenizer": "Qwen",
-                "instruct_type": "chatml"
-            },
-            "pricing": {
-                "prompt": "0",
-                "completion": "0",
-                "image": "0",
-                "request": "0"
-            },
-            "top_provider": {
-                "context_length": 8192,
-                "max_completion_tokens": 4096,
                 "is_moderated": false
             },
             "per_request_limits": null

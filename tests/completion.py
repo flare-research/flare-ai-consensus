@@ -62,7 +62,7 @@ def start_chat(args: argparse.Namespace) -> None:
     )
 
     try:
-        logger.info("sending prompt", model_id=model_id)
+        logger.info("sending prompt", model_id=model_id, prompt=prompt)
         response = send_prompt(client, model_id, prompt)
 
         # Save the full JSON response to a file.

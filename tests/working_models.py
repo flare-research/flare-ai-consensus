@@ -3,7 +3,6 @@ import asyncio
 import structlog
 
 from flare_ai_consensus.config import config
-from flare_ai_consensus.consensus.config import ModelConfig
 from flare_ai_consensus.router.client import AsyncOpenRouterClient
 from flare_ai_consensus.utils.loader import load_json
 from flare_ai_consensus.utils.saver import save_json
@@ -13,7 +12,7 @@ logger = structlog.get_logger(__name__)
 
 async def _test_model_completion(
     client: AsyncOpenRouterClient,
-    model: ModelConfig,
+    model: dict,
     test_prompt: str,
     api_endpoint: str,
     delay: float = 1.0,
@@ -94,17 +93,19 @@ async def filter_working_models(
     :return: A list of models (dicts) that work with the specified API.
     """
     tasks = [
-        _test_model_completion(client, model, test_prompt, api_endpoint, delay=i * 2)
+        _test_model_completion(client, model, test_prompt, api_endpoint, delay=i * 3)
         for i, model in enumerate(free_models)
     ]
-    results = await asyncio.gather(*tasks, return_exceptions=True)
-    # Filter out any exceptions and only keep models where works is True.
-    return [
-        model
-        for result in results
-        if not isinstance(result, Exception) and result[1]
-        for model in [result[0]]
-    ]
+    results = await asyncio.gather(*tasks)
+
+    valid_models = []
+    for result in results:
+        if isinstance(result, Exception):
+            continue
+        model, works = result
+        if works:
+            valid_models.append(model)
+    return valid_models
 
 
 async def main() -> None:

@@ -39,7 +39,7 @@ async def get_response_for_model(
     client: AsyncOpenRouterClient,
     consensus_config: ConsensusConfig,
     model: ModelConfig,
-    aggregated_response: str,
+    aggregated_response: str | None,
 ) -> tuple[str, str]:
     """
     Asynchronously sends a chat completion request for a given model.

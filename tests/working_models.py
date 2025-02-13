@@ -16,7 +16,7 @@ async def _test_model_completion(
     test_prompt: str,
     api_endpoint: str,
     delay: float = 1.0,
-) -> tuple[dict, bool]:
+) -> tuple[ModelConfig, bool]:
     """
     Asynchronously sends a test request for a model using the specified API endpoint.
 
@@ -28,7 +28,7 @@ async def _test_model_completion(
     :return: A tuple (model, works) where works is True if the API call
         succeeded without an error.
     """
-    model_id = model.get("id")
+    model_id = model.model_id
     if not model_id:
         return (model, False)
 
@@ -37,16 +37,16 @@ async def _test_model_completion(
         payload = {
             "model": model_id,
             "prompt": test_prompt,
-            "max_tokens": model.get("max_tokens", 50),
-            "temperature": model.get("temperature", 0.7),
+            "max_tokens": model.max_tokens,
+            "temperature": model.temperature,
         }
         send_func = client.send_completion
     elif api_endpoint.lower() == "chat_completion":
         payload = {
             "model": model_id,
             "messages": [{"role": "user", "content": test_prompt}],
-            "max_tokens": model.get("max_tokens", 50),
-            "temperature": model.get("temperature", 0.7),
+            "max_tokens": model.max_tokens,
+            "temperature": model.max_tokens,
         }
         send_func = client.send_chat_completion
     else:

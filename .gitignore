@@ -265,3 +265,5 @@ fabric.properties
 *.csv
 .DS_Store
 .ruff_cache/
+
+*.json

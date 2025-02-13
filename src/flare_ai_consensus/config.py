@@ -39,4 +39,4 @@ class Config(BaseSettings):
 
 # Create a global settings instance
 config = Config()
-logger.debug("settings", settings=config.model_dump())
+logger.debug("config", settings=config.model_dump())

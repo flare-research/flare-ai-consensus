@@ -47,7 +47,7 @@ async def _test_model_completion(
             "model": model_id,
             "messages": [{"role": "user", "content": test_prompt}],
             "max_tokens": model.max_tokens,
-            "temperature": model.max_tokens,
+            "temperature": model.temperature,
         }
         send_func = client.send_chat_completion
     else:
@@ -86,7 +86,6 @@ async def filter_working_models(
     Asynchronously tests each model in free_models with the given test
     prompt and API endpoint returning only those models that respond
     without an error.
-
     :param client: An instance of AsyncOpenRouterClient.
     :param free_models: A list of model dictionaries.
     :param test_prompt: The prompt to test.
@@ -97,16 +96,17 @@ async def filter_working_models(
         _test_model_completion(client, model, test_prompt, api_endpoint, delay=i * 3)
         for i, model in enumerate(free_models)
     ]
-    results = await asyncio.gather(*tasks)
+    results = await asyncio.gather(*tasks, return_exceptions=True)
 
-    valid_models = []
+    working_models = []
     for result in results:
         if isinstance(result, Exception):
             continue
-        model, works = result
+        model, works = result  # pyright: ignore [reportGeneralTypeIssues]
         if works:
-            valid_models.append(model)
-    return valid_models
+            working_models.append(model)
+
+    return working_models
 
 
 async def main() -> None:

@@ -5,41 +5,31 @@
 
 Flare AI SDK for Consensus Learning.
 
-This repository provides a Python implementation of a single-node, multi-model **Consensus Learning (CL)** framework. CL is a decentralized ensemble learning approach described in [arXiv:2402.16157](https://arxiv.org/abs/2402.16157).
-
-The current implementation specializes in leveraging Large Language Models (LLMs) through a centralized architecture using OpenAI's [OpenRouter](https://openrouter.ai/docs/quick-start). OpenRouter offers access to over 300 models via a unified interface.
-
-This repository serves as the reference implementation for the **Consensus Learning track** at the **Verifiable AI Hackathon** organized by Google Cloud in collaboration with Flare. For more details, please visit the [main hackathon website](https://hackathon.flare.network/) and [Flare’s blogpost](https://flare.network/flare-x-google-cloud-hackathon/).
-
 ## 🚀 Key Features
 
 - **Consensus Learning:** Provides a Python implementation of a single-node, multi-model of Consensus Learning, a decentralized ensemble learning approach described in [arXiv:2402.16157](https://arxiv.org/abs/2402.16157).
-- **Over 300 models supported:** Leverages LLMs via a centralized architecture using OpenAI's [OpenRouter](https://openrouter.ai/docs/quick-start).
+- **Over 300 models supported:** Leverages LLMs via a centralized architecture using [OpenRouter](https://openrouter.ai/docs/quick-start).
 
 ## Prerequisites
 
-Install all dependencies using [uv](https://docs.astral.sh/uv/getting-started/installation/) by running:
+1. Install all dependencies using [uv](https://docs.astral.sh/uv/getting-started/installation/) by running:
 
-```bash
-uv sync --all-extras
-```
+    ```bash
+    uv sync --all-extras
+    ```
 
-### OpenAI API Key
+2. Generate an [OpenRouter API key](https://openrouter.ai/settings/keys) and set it in your environment variables. You can verify your available credits by running:
 
-Generate an [OpenRouter API key](https://openrouter.ai/settings/keys) and set it in your environment variables. You can verify your available credits by running:
-
-```bash
-uv run python -m tests.credits
-```
+    ```bash
+    uv run python -m tests.credits
+    ```
 
 ## OpenRouter Endpoints
 
 The repository provides scripts to interact with OpenRouter:
 
-- **List All Models:**  
-  Retrieves a list of all models.
-- **List Free Models:**  
-  Retrieves a list of all free models supported by OpenRouter.
+- **List All Models:** Retrieves a list of all models.
+- **List Free Models:** Retrieves a list of all free models supported by OpenRouter.
 
 Run the following command to generate two JSON files in the `data` folder:
 
@@ -47,8 +37,7 @@ Run the following command to generate two JSON files in the `data` folder:
 uv run python -m tests.models
 ```
 
-**Note:**  
-Free models are limited to 20 requests per minute and 200 requests per day.
+**Note:** Free models are limited to 20 requests/minute and 200 requests/day.
 Although all models should work in principle, some may return errors. To filter down to working free models, run:
 
 ```bash

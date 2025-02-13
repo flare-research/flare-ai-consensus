@@ -18,6 +18,7 @@ async def _test_model_completion(
     api_endpoint: str,
     delay: float = 1.0,
 ) -> tuple[ModelConfig, bool]:
+) -> tuple[ModelConfig, bool]:
     """
     Asynchronously sends a test request for a model using the specified API endpoint.
 
@@ -46,6 +47,8 @@ async def _test_model_completion(
         payload = {
             "model": model_id,
             "messages": [{"role": "user", "content": test_prompt}],
+            "max_tokens": model.max_tokens,
+            "temperature": model.max_tokens,
             "max_tokens": model.max_tokens,
             "temperature": model.max_tokens,
         }
@@ -93,7 +96,7 @@ async def filter_working_models(
     :return: A list of models (dicts) that work with the specified API.
     """
     tasks = [
-        _test_model_completion(client, model, test_prompt, api_endpoint, delay=i * 2)
+        _test_model_completion(client, model, test_prompt, api_endpoint, delay=i * 3)
         for i, model in enumerate(free_models)
     ]
     results = await asyncio.gather(*tasks, return_exceptions=True)

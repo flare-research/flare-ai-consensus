@@ -2,7 +2,7 @@ from flare_ai_consensus.consensus.config import AggregatorConfig
 from flare_ai_consensus.router.client import AsyncOpenRouterClient, OpenRouterClient
 
 
-def concatenate_aggregator(responses: dict) -> str:
+def concatenate_aggregator(responses: dict[str, str]) -> str:
     """
     Aggregate responses by concatenating each model's answer with a label.
 
@@ -15,7 +15,7 @@ def concatenate_aggregator(responses: dict) -> str:
 def centralized_llm_aggregator(
     client: OpenRouterClient,
     aggregator_config: AggregatorConfig,
-    aggregated_responses: dict,
+    aggregated_responses: dict[str, str],
 ) -> str:
     """Use a centralized LLM  to combine responses.
 
@@ -53,7 +53,7 @@ def centralized_llm_aggregator(
 async def async_centralized_llm_aggregator(
     client: AsyncOpenRouterClient,
     aggregator_config: AggregatorConfig,
-    aggregated_responses: dict,
+    aggregated_responses: dict[str, str],
 ) -> str:
     """
     Use a centralized LLM (via an async client) to combine responses.

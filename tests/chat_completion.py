@@ -3,9 +3,7 @@ import argparse
 import structlog
 
 from flare_ai_consensus.config import config
-from flare_ai_consensus.router import (
-    requests,  # This module should expose send_chat_completion
-)
+from flare_ai_consensus.router import requests
 from flare_ai_consensus.router.client import OpenRouterClient
 from flare_ai_consensus.utils.saver import save_json
 

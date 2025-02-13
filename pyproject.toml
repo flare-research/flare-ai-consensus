@@ -5,7 +5,6 @@ description = "Flare AI SDK template for single-node multi-model Consensus Learn
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "asyncio>=3.4.3",
     "httpx>=0.28.1",
     "matplotlib>=3.10.0",
     "numpy>=2.2.2",

@@ -3,6 +3,7 @@ import asyncio
 import structlog
 
 from flare_ai_consensus.config import config
+from flare_ai_consensus.consensus.config import ModelConfig
 from flare_ai_consensus.router.client import AsyncOpenRouterClient
 from flare_ai_consensus.utils.loader import load_json
 from flare_ai_consensus.utils.saver import save_json
@@ -12,7 +13,7 @@ logger = structlog.get_logger(__name__)
 
 async def _test_model_completion(
     client: AsyncOpenRouterClient,
-    model: dict,
+    model: ModelConfig,
     test_prompt: str,
     api_endpoint: str,
     delay: float = 1.0,

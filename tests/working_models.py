@@ -48,9 +48,9 @@ async def _test_model_completion(
             "model": model_id,
             "messages": [{"role": "user", "content": test_prompt}],
             "max_tokens": model.max_tokens,
-            "temperature": model.max_tokens,
+            "temperature": model.temperature,
             "max_tokens": model.max_tokens,
-            "temperature": model.max_tokens,
+            "temperature": model.temperature,
         }
         send_func = client.send_chat_completion
     else:

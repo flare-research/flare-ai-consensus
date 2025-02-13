@@ -1,23 +1,9 @@
-import os
-from dataclasses import dataclass
 from pathlib import Path
 
-from dotenv import load_dotenv
+import structlog
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-load_dotenv()
-
-
-@dataclass(frozen=True, kw_only=True)
-class Config:
-    open_router_base_url: str
-    open_router_api_key: str
-    data_path: Path
-    input_path: Path
-
-
-def load_env_var(var_name: str) -> str:
-    """Loads and validates environment variables."""
-    return os.getenv(var_name, default="")
+logger = structlog.get_logger(__name__)
 
 
 def create_path(folder_name: str) -> Path:
@@ -27,10 +13,30 @@ def create_path(folder_name: str) -> Path:
     return path
 
 
-# Initialize configuration
-config = Config(
-    open_router_base_url=load_env_var("OPENROUTER_BASE_URL"),
-    open_router_api_key=load_env_var("OPENROUTER_API_KEY"),
-    data_path=create_path("data"),
-    input_path=create_path("flare_ai_consensus"),
-)
+class Config(BaseSettings):
+    """
+    Application settings model that provides configuration for all components.
+    """
+
+    # Base URL for OpenRouter
+    open_router_base_url: str = "https://openrouter.ai/api/v1"
+    # API Key for OpenRouter
+    open_router_api_key: str = ""
+    # Path to save final data
+    data_path: Path = create_path("data")
+    # Input path for loading JSON
+    input_path: Path = create_path("flare_ai_consensus")
+
+    model_config = SettingsConfigDict(
+        # This enables .env file support
+        env_file=".env",
+        # If .env file is not found, don't raise an error
+        env_file_encoding="utf-8",
+        # Optional: you can also specify multiple .env files
+        extra="ignore",
+    )
+
+
+# Create a global settings instance
+config = Config()
+logger.debug("settings", settings=config.model_dump())

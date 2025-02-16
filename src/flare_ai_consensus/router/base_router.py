@@ -1,7 +1,9 @@
-from typing import Any, Literal, TypedDict
+from typing import Any, TypedDict
 
 import httpx
 import requests
+
+from flare_ai_consensus.settings import Message
 
 
 class CompletionRequest(TypedDict):
@@ -9,11 +11,6 @@ class CompletionRequest(TypedDict):
     prompt: str
     max_tokens: int
     temperature: float
-
-
-class Message(TypedDict):
-    role: Literal["user", "assistant", "system"]
-    content: str
 
 
 class ChatRequest(TypedDict):

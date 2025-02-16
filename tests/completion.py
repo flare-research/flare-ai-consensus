@@ -2,8 +2,8 @@ import argparse
 
 import structlog
 
-from flare_ai_consensus.config import config
 from flare_ai_consensus.router import CompletionRequest, OpenRouterProvider
+from flare_ai_consensus.settings import settings
 from flare_ai_consensus.utils import save_json
 
 logger = structlog.get_logger(__name__)
@@ -56,8 +56,8 @@ def start_chat(args: argparse.Namespace) -> None:
 
     # Initialize the OpenRouter provider
     provider = OpenRouterProvider(
-        api_key=config.open_router_api_key,
-        base_url=config.open_router_base_url,
+        api_key=settings.open_router_api_key,
+        base_url=settings.open_router_base_url,
     )
 
     try:
@@ -65,7 +65,7 @@ def start_chat(args: argparse.Namespace) -> None:
         response = send_prompt(provider, model_id, prompt)
 
         # Save the full JSON response to a file.
-        output_file = config.data_path / "response.json"
+        output_file = settings.data_path / "response.json"
         save_json(response, output_file)
 
         # Log the response

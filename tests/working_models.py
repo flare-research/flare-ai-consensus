@@ -2,13 +2,12 @@ import asyncio
 
 import structlog
 
-from flare_ai_consensus.config import config
-from flare_ai_consensus.consensus.config import ModelConfig
 from flare_ai_consensus.router import (
     AsyncOpenRouterProvider,
     ChatRequest,
     CompletionRequest,
 )
+from flare_ai_consensus.settings import ModelConfig, settings
 from flare_ai_consensus.utils import load_json, save_json
 
 logger = structlog.get_logger(__name__)
@@ -111,13 +110,13 @@ async def filter_working_models(
 
 async def main() -> None:
     # Load the free models from free_models.json.
-    free_models_file = config.data_path / "free_models.json"
+    free_models_file = settings.data_path / "free_models.json"
     free_models = load_json(free_models_file).get("data", [])
     test_prompt = "Who is Ash Ketchum?"
 
     # Initialize the asynchronous OpenRouter provider.
     provider = AsyncOpenRouterProvider(
-        api_key=config.open_router_api_key, base_url=config.open_router_base_url
+        api_key=settings.open_router_api_key, base_url=settings.open_router_base_url
     )
 
     # Filter free models that work with the completions endpoints.
@@ -126,7 +125,7 @@ async def main() -> None:
             provider, free_models, test_prompt, endpoint
         )
         completion_output_file = (
-            config.data_path / f"free_working_{endpoint}_models.json"
+            settings.data_path / f"free_working_{endpoint}_models.json"
         )
         save_json({"data": working_models}, completion_output_file)
         logger.info(

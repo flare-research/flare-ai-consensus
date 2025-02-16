@@ -2,8 +2,8 @@ import argparse
 
 import structlog
 
-from flare_ai_consensus.config import config
 from flare_ai_consensus.router import ChatRequest, OpenRouterProvider
+from flare_ai_consensus.settings import settings
 from flare_ai_consensus.utils import save_json
 
 logger = structlog.get_logger(__name__)
@@ -67,7 +67,7 @@ def default_mode(
             break
 
     # Save the final conversation to a file.
-    output_file = config.data_path / "chat_response.json"
+    output_file = settings.data_path / "chat_response.json"
     save_json({"conversation": conversation}, output_file)
     logger.info("final conversation saved", output_file=output_file)
 
@@ -109,8 +109,8 @@ def main() -> None:
 
     # Initialize the OpenRouter provider
     provider = OpenRouterProvider(
-        api_key=config.open_router_api_key,
-        base_url=config.open_router_base_url,
+        api_key=settings.open_router_api_key,
+        base_url=settings.open_router_base_url,
     )
 
     model_id = "qwen/qwen-vl-plus:free"

@@ -2,13 +2,12 @@ import asyncio
 
 import structlog
 
-from flare_ai_consensus.config import config
 from flare_ai_consensus.consensus import (
-    ConsensusConfig,
     async_centralized_llm_aggregator,
     send_round,
 )
 from flare_ai_consensus.router import AsyncOpenRouterProvider
+from flare_ai_consensus.settings import ConsensusConfig, settings
 from flare_ai_consensus.utils import load_json, save_json
 
 logger = structlog.get_logger(__name__)
@@ -56,7 +55,7 @@ async def run_consensus(
         response_data[f"aggregate_{i + 1}"] = aggregated_response
 
     # Step 3: Save final consensus.
-    output_file = config.data_path / "final_consensus.json"
+    output_file = settings.data_path / "final_consensus.json"
     save_json(
         response_data,
         output_file,
@@ -69,16 +68,17 @@ async def run_consensus(
 
 def main() -> None:
     # Load the consensus configuration from input.json
-    config_json = load_json(config.input_path / "input.json")
-    consensus_config = ConsensusConfig.load_parameters(config_json)
+    config_json = load_json(settings.input_path / "input.json")
+    settings.load_consensus_config(config_json)
 
     # Initialize the OpenRouter provider.
     provider = AsyncOpenRouterProvider(
-        api_key=config.open_router_api_key, base_url=config.open_router_base_url
+        api_key=settings.open_router_api_key, base_url=settings.open_router_base_url
     )
 
     # Run the consensus learning process with synchronous requests.
-    asyncio.run(run_consensus(provider, consensus_config))
+    if settings.consensus_config:
+        asyncio.run(run_consensus(provider, settings.consensus_config))
 
 
 if __name__ == "__main__":

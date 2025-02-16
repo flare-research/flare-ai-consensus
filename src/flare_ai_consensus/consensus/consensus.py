@@ -2,14 +2,14 @@ import asyncio
 
 import structlog
 
-from flare_ai_consensus.consensus.config import ConsensusConfig, ModelConfig
-from flare_ai_consensus.router import AsyncOpenRouterProvider, ChatRequest, Message
+from flare_ai_consensus.router import AsyncOpenRouterProvider, ChatRequest
+from flare_ai_consensus.settings import ConsensusConfig, Message, ModelConfig
 from flare_ai_consensus.utils import parse_chat_response
 
 logger = structlog.get_logger(__name__)
 
 
-def build_improvement_conversation(
+def _build_improvement_conversation(
     consensus_config: ConsensusConfig, aggregated_response: str
 ) -> list[Message]:
     """Build an updated conversation using the consensus configuration.
@@ -35,7 +35,7 @@ def build_improvement_conversation(
     return conversation
 
 
-async def get_response_for_model(
+async def _get_response_for_model(
     provider: AsyncOpenRouterProvider,
     consensus_config: ConsensusConfig,
     model: ModelConfig,
@@ -57,7 +57,7 @@ async def get_response_for_model(
         logger.info("sending initial prompt", model_id=model.model_id)
     else:
         # Build the improvement conversation.
-        conversation = build_improvement_conversation(
+        conversation = _build_improvement_conversation(
             consensus_config, aggregated_response
         )
         logger.info("sending improvement prompt", model_id=model.model_id)
@@ -89,7 +89,7 @@ async def send_round(
     :return: A dictionary mapping model IDs to their response texts.
     """
     tasks = [
-        get_response_for_model(provider, consensus_config, model, aggregated_response)
+        _get_response_for_model(provider, consensus_config, model, aggregated_response)
         for model in consensus_config.models
     ]
     results = await asyncio.gather(*tasks)

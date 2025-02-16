@@ -1,13 +1,12 @@
-from flare_ai_consensus.consensus.config import AggregatorConfig
 from flare_ai_consensus.router import (
     AsyncOpenRouterProvider,
     ChatRequest,
-    Message,
     OpenRouterProvider,
 )
+from flare_ai_consensus.settings import AggregatorConfig, Message
 
 
-def concatenate_aggregator(responses: dict[str, str]) -> str:
+def _concatenate_aggregator(responses: dict[str, str]) -> str:
     """
     Aggregate responses by concatenating each model's answer with a label.
 
@@ -35,7 +34,7 @@ def centralized_llm_aggregator(
     messages.extend(aggregator_config.context)
 
     # Add a system message with the aggregated responses.
-    aggregated_str = concatenate_aggregator(aggregated_responses)
+    aggregated_str = _concatenate_aggregator(aggregated_responses)
     messages.append(
         {"role": "system", "content": f"Aggregated responses:\n{aggregated_str}"}
     )

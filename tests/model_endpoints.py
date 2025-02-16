@@ -1,7 +1,7 @@
 import structlog
 
-from flare_ai_consensus.config import config
 from flare_ai_consensus.router import OpenRouterProvider
+from flare_ai_consensus.settings import settings
 from flare_ai_consensus.utils import extract_author
 
 logger = structlog.get_logger(__name__)
@@ -15,8 +15,8 @@ def get_model_endpoints(provider: OpenRouterProvider, author: str, slug: str) ->
 if __name__ == "__main__":
     # Initialize the OpenRouter provider
     provider = OpenRouterProvider(
-        api_key=config.open_router_api_key,
-        base_url=config.open_router_base_url,
+        api_key=settings.open_router_api_key,
+        base_url=settings.open_router_base_url,
     )
     # Pick a random model_id
     model_id = "qwen/qwen-vl-plus:free"

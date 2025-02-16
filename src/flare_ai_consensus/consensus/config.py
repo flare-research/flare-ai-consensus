@@ -1,9 +1,12 @@
 from dataclasses import dataclass
+from typing import Literal
+
+from flare_ai_consensus.router import Message
 
 
 @dataclass(frozen=True)
 class ModelConfig:
-    model_id: str | None = None
+    model_id: str
     max_tokens: int = 50
     temperature: float = 0.7
 
@@ -12,18 +15,18 @@ class ModelConfig:
 class AggregatorConfig:
     model: ModelConfig
     approach: str
-    context: list[dict]
-    prompt: list[dict]
+    context: list[Message]
+    prompt: list[Message]
 
 
 @dataclass(frozen=True)
 class ConsensusConfig:
     models: list[ModelConfig]
     aggregator_config: AggregatorConfig
-    initial_prompt: list[dict]
+    initial_prompt: list[Message]
     improvement_prompt: str
     iterations: int
-    aggregated_prompt_type: str
+    aggregated_prompt_type: Literal["user", "assistant", "system"]
 
     @staticmethod
     def load_parameters(json_data: dict) -> "ConsensusConfig":

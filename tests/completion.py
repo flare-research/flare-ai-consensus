@@ -3,9 +3,8 @@ import argparse
 import structlog
 
 from flare_ai_consensus.config import config
-from flare_ai_consensus.router import requests
-from flare_ai_consensus.router.client import OpenRouterClient
-from flare_ai_consensus.utils.saver import save_json
+from flare_ai_consensus.router import CompletionRequest, OpenRouterProvider
+from flare_ai_consensus.utils import save_json
 
 logger = structlog.get_logger(__name__)
 
@@ -32,22 +31,22 @@ def parse_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def send_prompt(client: OpenRouterClient, model_id: str, prompt: str) -> dict:
+def send_prompt(provider: OpenRouterProvider, model_id: str, prompt: str) -> dict:
     """
     Send a prompt to the model using the completions endpoint.
 
-    :param client: An instance of OpenRouterClient.
+    :param provider: An instance of OpenRouterProvder.
     :param model_id: The model ID to use.
     :param prompt: The text prompt to send.
     :return: The JSON response from the API.
     """
-    payload = {
+    payload: CompletionRequest = {
         "model": model_id,
         "prompt": prompt,
         "max_tokens": 1500,
         "temperature": 0.7,
     }
-    return requests.send_completion(client, payload)
+    return provider.send_completion(payload)
 
 
 def start_chat(args: argparse.Namespace) -> None:
@@ -55,15 +54,15 @@ def start_chat(args: argparse.Namespace) -> None:
     model_id = args.model
     prompt = args.prompt
 
-    # Initialize the OpenRouter client.
-    client = OpenRouterClient(
+    # Initialize the OpenRouter provider
+    provider = OpenRouterProvider(
         api_key=config.open_router_api_key,
         base_url=config.open_router_base_url,
     )
 
     try:
         logger.info("sending prompt", model_id=model_id, prompt=prompt)
-        response = send_prompt(client, model_id, prompt)
+        response = send_prompt(provider, model_id, prompt)
 
         # Save the full JSON response to a file.
         output_file = config.data_path / "response.json"

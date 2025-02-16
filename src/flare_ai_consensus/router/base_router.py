@@ -1,8 +1,29 @@
+from typing import Any, Literal, TypedDict
+
 import httpx
 import requests
 
 
-class BaseClient:
+class CompletionRequest(TypedDict):
+    model: str
+    prompt: str
+    max_tokens: int
+    temperature: float
+
+
+class Message(TypedDict):
+    role: Literal["user", "assistant", "system"]
+    content: str
+
+
+class ChatRequest(TypedDict):
+    model: str
+    messages: list[Message]
+    max_tokens: int
+    temperature: float
+
+
+class BaseRouter:
     """A base class to handle HTTP requests and common logic for API interaction."""
 
     def __init__(self, base_url: str, api_key: str | None = None) -> None:
@@ -39,7 +60,11 @@ class BaseClient:
         msg = f"Error ({response.status_code}): {response.text}"
         raise ConnectionError(msg)
 
-    def _post(self, endpoint: str, json_payload: dict) -> dict:
+    def _post(
+        self,
+        endpoint: str,
+        json_payload: dict[str, Any] | CompletionRequest | ChatRequest,
+    ) -> dict:
         """
         Make a POST request to the API with a JSON payload and return the JSON response.
 
@@ -60,7 +85,7 @@ class BaseClient:
         raise ConnectionError(msg)
 
 
-class AsyncBaseClient:
+class AsyncBaseRouter:
     """
     An asynchronous base class to handle HTTP requests and
     common logic for API interaction.
@@ -96,7 +121,11 @@ class AsyncBaseClient:
         msg = f"Error ({response.status_code}): {response.text}"
         raise ConnectionError(msg)
 
-    async def _post(self, endpoint: str, json_payload: dict) -> dict:
+    async def _post(
+        self,
+        endpoint: str,
+        json_payload: dict[str, Any] | CompletionRequest | ChatRequest,
+    ) -> dict:
         """
         Make an asynchronous POST request to the API with a JSON
         payload and return the JSON response.

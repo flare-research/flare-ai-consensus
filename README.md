@@ -39,11 +39,7 @@ uv sync --all-extras
 
 ### Step 2: Configure Environment Variables
 
-Set your OpenRouter API key in your environment:
-
-```bash
-export OPENROUTER_API_KEY=<your-openrouter-api-key>
-```
+Rename `.env.example` to `.env` and add in the variables (e.g. your [OpenRouter API Key](https://openrouter.ai/keys))
 
 Verify your available credits and get all supported models with:
 

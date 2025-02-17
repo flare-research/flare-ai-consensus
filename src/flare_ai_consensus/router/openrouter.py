@@ -1,12 +1,19 @@
-from flare_ai_consensus.router.base_client import AsyncBaseClient, BaseClient
+from flare_ai_consensus.router.base_router import (
+    AsyncBaseRouter,
+    BaseRouter,
+    ChatRequest,
+    CompletionRequest,
+)
 
 
-class OpenRouterClient(BaseClient):
-    """Sync Client to interact with the OpenRouter API."""
+class OpenRouterProvider(BaseRouter):
+    """Sync provider to interact with the OpenRouter API."""
 
-    def __init__(self, api_key: str | None = None, base_url: str | None = None) -> None:
+    def __init__(
+        self, api_key: str | None = None, base_url: str = "https://openrouter.ai/api/v1"
+    ) -> None:
         """
-        Initialize the OpenRouter client.
+        Initialize the OpenRouter provider.
 
         The base URL is set to the OpenRouter API endpoint by default,
         but can be overridden.
@@ -14,8 +21,6 @@ class OpenRouterClient(BaseClient):
         :param base_url: Optional custom base URL.
             Defaults to "https://openrouter.ai/api/v1"
         """
-        if base_url is None:
-            base_url = "https://openrouter.ai/api/v1"
         super().__init__(base_url, api_key)
 
     def get_available_models(self) -> dict:
@@ -50,7 +55,7 @@ class OpenRouterClient(BaseClient):
         endpoint = "/credits"
         return self._get(endpoint)
 
-    def send_completion(self, payload: dict) -> dict:
+    def send_completion(self, payload: CompletionRequest) -> dict:
         """
         Send a prompt to the completions endpoint.
 
@@ -60,7 +65,7 @@ class OpenRouterClient(BaseClient):
         endpoint = "/completions"
         return self._post(endpoint, payload)
 
-    def send_chat_completion(self, payload: dict) -> dict:
+    def send_chat_completion(self, payload: ChatRequest) -> dict:
         """
         Send a prompt to the chat completions endpoint.
 
@@ -72,21 +77,21 @@ class OpenRouterClient(BaseClient):
         return self._post(endpoint, payload)
 
 
-class AsyncOpenRouterClient(AsyncBaseClient):
-    """Asynchronous client to interact with the OpenRouter API."""
+class AsyncOpenRouterProvider(AsyncBaseRouter):
+    """Asynchronous provider to interact with the OpenRouter API."""
 
-    def __init__(self, api_key: str | None = None, base_url: str | None = None) -> None:
+    def __init__(
+        self, api_key: str | None = None, base_url: str = "https://openrouter.ai/api/v1"
+    ) -> None:
         """
-        Initialize the AsyncOpenRouterClient.
+        Initialize the AsyncOpenRouterProvider.
 
         :param api_key: Optional API key for authentication.
         :param base_url: Optional custom base URL.
         """
-        if base_url is None:
-            base_url = "https://openrouter.ai/api/v1"
         super().__init__(base_url, api_key)
 
-    async def send_completion(self, payload: dict) -> dict:
+    async def send_completion(self, payload: CompletionRequest) -> dict:
         """
         Send a prompt to the completions endpoint.
 
@@ -96,7 +101,7 @@ class AsyncOpenRouterClient(AsyncBaseClient):
         endpoint = "/completions"
         return await self._post(endpoint, payload)
 
-    async def send_chat_completion(self, payload: dict) -> dict:
+    async def send_chat_completion(self, payload: ChatRequest) -> dict:
         """
         Send a prompt to the chat completions endpoint.
 

@@ -2,10 +2,9 @@ import argparse
 
 import structlog
 
-from flare_ai_consensus.config import config
-from flare_ai_consensus.router import requests
-from flare_ai_consensus.router.client import OpenRouterClient
-from flare_ai_consensus.utils.saver import save_json
+from flare_ai_consensus.router import ChatRequest, OpenRouterProvider
+from flare_ai_consensus.settings import settings
+from flare_ai_consensus.utils import save_json
 
 logger = structlog.get_logger(__name__)
 
@@ -26,7 +25,7 @@ def parse_arguments() -> argparse.Namespace:
 
 
 def default_mode(
-    client: OpenRouterClient,
+    provider: OpenRouterProvider,
     initial_conversation: list[dict],
     model_id: str,
     num_iterations: int,
@@ -38,7 +37,7 @@ def default_mode(
     conversation.extend(initial_conversation)
 
     for i in range(num_iterations):
-        payload = {
+        payload: ChatRequest = {
             "model": model_id,
             "messages": conversation,
             "max_tokens": 1500,
@@ -46,7 +45,7 @@ def default_mode(
         }
         try:
             logger.info("sending conversation", model_id=model_id, iteration=i + 1)
-            response = requests.send_chat_completion(client, payload)
+            response = provider.send_chat_completion(payload)
             # Extract the assistant's response.
             assistant_response = (
                 response.get("choices", [])[0].get("message", {}).get("content", "")
@@ -68,12 +67,12 @@ def default_mode(
             break
 
     # Save the final conversation to a file.
-    output_file = config.data_path / "chat_response.json"
+    output_file = settings.data_path / "chat_response.json"
     save_json({"conversation": conversation}, output_file)
     logger.info("final conversation saved", output_file=output_file)
 
 
-def interactive_mode(client: OpenRouterClient, model_id: str) -> None:
+def interactive_mode(provider: OpenRouterProvider, model_id: str) -> None:
     """Run the chat in interactive mode."""
     conversation = []
     print("Interactive mode. Type 'exit' to quit.")  # noqa: T201
@@ -86,7 +85,7 @@ def interactive_mode(client: OpenRouterClient, model_id: str) -> None:
 
         conversation.append({"role": "user", "content": user_input})
 
-        payload = {
+        payload: ChatRequest = {
             "model": model_id,
             "messages": conversation,
             "max_tokens": 1500,
@@ -94,7 +93,7 @@ def interactive_mode(client: OpenRouterClient, model_id: str) -> None:
         }
 
         try:
-            response = requests.send_chat_completion(client, payload)
+            response = provider.send_chat_completion(payload)
             assistant_msg = (
                 response.get("choices", [])[0].get("message", {}).get("content", "")
             )
@@ -108,10 +107,10 @@ def interactive_mode(client: OpenRouterClient, model_id: str) -> None:
 def main() -> None:
     args = parse_arguments()
 
-    # Initialize the OpenRouter client.
-    client = OpenRouterClient(
-        api_key=config.open_router_api_key,
-        base_url=config.open_router_base_url,
+    # Initialize the OpenRouter provider
+    provider = OpenRouterProvider(
+        api_key=settings.open_router_api_key,
+        base_url=settings.open_router_base_url,
     )
 
     model_id = "qwen/qwen-vl-plus:free"
@@ -134,14 +133,14 @@ def main() -> None:
         )
 
         default_mode(
-            client,
+            provider,
             initial_conversation,
             model_id,
             3,
             improvement_prompt,
         )
     elif args.mode == "interactive":
-        interactive_mode(client, model_id)
+        interactive_mode(provider, model_id)
     else:
         logger.info("invalid mode: choose 'default' or 'interactive'")
 

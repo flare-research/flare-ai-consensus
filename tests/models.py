@@ -1,20 +1,20 @@
-from flare_ai_consensus.config import config
-from flare_ai_consensus.router.client import OpenRouterClient
-from flare_ai_consensus.utils.saver import save_json
+from flare_ai_consensus.router import OpenRouterProvider
+from flare_ai_consensus.settings import settings
+from flare_ai_consensus.utils import save_json
 
 
-def get_models(client: OpenRouterClient) -> dict:
+def get_models(provider: OpenRouterProvider) -> dict:
     """List all available models.
 
-    :param client: the initialized OpenRouterClient.
+    :param provider: the initialized OpenRouterProvider.
     """
-    return client.get_available_models()
+    return provider.get_available_models()
 
 
 def filter_free_models(models_data: dict) -> list:
     """Filter the models that are free.
 
-    :param models_data: json return of client.get_available_models()
+    :param models_data: json return of provider.get_available_models()
     :return: A json of models that meet the free criteria.
     """
     free_models = []
@@ -33,20 +33,20 @@ def filter_free_models(models_data: dict) -> list:
 
 
 if __name__ == "__main__":
-    # Initialize the OpenRouter client.
-    client = OpenRouterClient(
-        api_key=config.open_router_api_key,
-        base_url=config.open_router_base_url,
+    # Initialize the OpenRouter provider
+    provider = OpenRouterProvider(
+        api_key=settings.open_router_api_key,
+        base_url=settings.open_router_base_url,
     )
 
     # Get all models
-    all_models = get_models(client)
-    file_path = config.data_path / "models.json"
+    all_models = get_models(provider)
+    file_path = settings.data_path / "models.json"
 
     save_json(all_models, file_path)
 
     # Get "free" models for additional testing
     free_models = filter_free_models(all_models)
-    file_path = config.data_path / "free_models.json"
+    file_path = settings.data_path / "free_models.json"
 
     save_json({"data": free_models}, file_path)

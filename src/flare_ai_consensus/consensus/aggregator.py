@@ -1,8 +1,12 @@
-from flare_ai_consensus.consensus.config import AggregatorConfig
-from flare_ai_consensus.router.client import AsyncOpenRouterClient, OpenRouterClient
+from flare_ai_consensus.router import (
+    AsyncOpenRouterProvider,
+    ChatRequest,
+    OpenRouterProvider,
+)
+from flare_ai_consensus.settings import AggregatorConfig, Message
 
 
-def concatenate_aggregator(responses: dict[str, str]) -> str:
+def _concatenate_aggregator(responses: dict[str, str]) -> str:
     """
     Aggregate responses by concatenating each model's answer with a label.
 
@@ -13,24 +17,24 @@ def concatenate_aggregator(responses: dict[str, str]) -> str:
 
 
 def centralized_llm_aggregator(
-    client: OpenRouterClient,
+    provider: OpenRouterProvider,
     aggregator_config: AggregatorConfig,
     aggregated_responses: dict[str, str],
 ) -> str:
     """Use a centralized LLM  to combine responses.
 
-    :param client: An OpenRouterClient instance.
+    :param provider: An OpenRouterProvider instance.
     :param aggregator_config: An instance of AggregatorConfig.
     :param aggregated_responses: A string containing aggregated
         responses from individual models.
     :return: The aggregator's combined response.
     """
     # Build the message list.
-    messages = []
+    messages: list[Message] = []
     messages.extend(aggregator_config.context)
 
     # Add a system message with the aggregated responses.
-    aggregated_str = concatenate_aggregator(aggregated_responses)
+    aggregated_str = _concatenate_aggregator(aggregated_responses)
     messages.append(
         {"role": "system", "content": f"Aggregated responses:\n{aggregated_str}"}
     )
@@ -38,7 +42,7 @@ def centralized_llm_aggregator(
     # Add the aggregator prompt
     messages.extend(aggregator_config.prompt)
 
-    payload = {
+    payload: ChatRequest = {
         "model": aggregator_config.model.model_id,
         "messages": messages,
         "max_tokens": aggregator_config.model.max_tokens,
@@ -46,19 +50,19 @@ def centralized_llm_aggregator(
     }
 
     # Get aggregated response from the centralized LLM
-    response = client.send_chat_completion(payload)
+    response = provider.send_chat_completion(payload)
     return response.get("choices", [])[0].get("message", {}).get("content", "")
 
 
 async def async_centralized_llm_aggregator(
-    client: AsyncOpenRouterClient,
+    provider: AsyncOpenRouterProvider,
     aggregator_config: AggregatorConfig,
     aggregated_responses: dict[str, str],
 ) -> str:
     """
-    Use a centralized LLM (via an async client) to combine responses.
+    Use a centralized LLM (via an async provider) to combine responses.
 
-    :param client: An asynchronous OpenRouter client.
+    :param provider: An asynchronous OpenRouterProvider.
     :param aggregator_config: An instance of AggregatorConfig.
     :param aggregated_responses: A string containing aggregated
         responses from individual models.
@@ -71,12 +75,12 @@ async def async_centralized_llm_aggregator(
     )
     messages.extend(aggregator_config.prompt)
 
-    payload = {
+    payload: ChatRequest = {
         "model": aggregator_config.model.model_id,
         "messages": messages,
         "max_tokens": aggregator_config.model.max_tokens,
         "temperature": aggregator_config.model.temperature,
     }
 
-    response = await client.send_chat_completion(payload)
+    response = await provider.send_chat_completion(payload)
     return response.get("choices", [])[0].get("message", {}).get("content", "")

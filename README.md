@@ -7,16 +7,16 @@ Flare AI SDK for Consensus Learning.
 
 ### 🚀 Key Features
 
-- **Consensus Learning Implementation**  
+- **Consensus Learning Implementation**
   A Python implementation of single-node, multi-model Consensus Learning (CL). CL is a decentralized ensemble learning paradigm introduced in [arXiv:2402.16157](https://arxiv.org/abs/2402.16157).
 
-- **300+ LLM Support**  
+- **300+ LLM Support**
   Leverages OpenRouter to access over 300 models via a unified interface.
 
-- **Iterative Feedback Loop**  
+- **Iterative Feedback Loop**
   Employs an aggregation process where multiple LLM outputs are refined over configurable iterations.
 
-- **Modular & Configurable**  
+- **Modular & Configurable**
   Easily customize models, conversation prompts, and aggregation parameters through a simple JSON configuration.
 
 ## 📌 Prerequisites
@@ -45,26 +45,27 @@ Set your OpenRouter API key in your environment:
 export OPENROUTER_API_KEY=<your-openrouter-api-key>
 ```
 
-Verify your available credits with:
+Verify your available credits and get all supported models with:
 
 ```bash
 uv run python -m tests.credits
+uv run python -m tests.models
 ```
 
 ## 🚀 Running Consensus Learning
 
 Configure your consensus learning instance in `src/input.json`, including:
 
-- **Models:**  
+- **Models:**
   Specify each LLM's OpenRouter `id`, along with parameters like `max_tokens` and `temperature`.
 
-- **Initial Conversation:**  
+- **Initial Conversation:**
   Set up the conversation context (e.g., a `system` message and an initial `user` query).
 
-- **Aggregator Settings:**  
+- **Aggregator Settings:**
   Define the aggregator model, additional context, aggregation prompt, and specify how aggregated responses are handled.
 
-- **Iterations:**  
+- **Iterations:**
   Determine the number of iterations for the feedback loop.
 
 Once configured, start the process with:

@@ -5,12 +5,15 @@ description = "Flare AI Kit template for single-node multi-model Consensus Learn
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "cryptography>=44.0.1",
     "httpx>=0.28.1",
     "matplotlib>=3.10.0",
     "numpy>=2.2.2",
     "openai>=1.61.0",
     "pandas>=2.2.3",
     "pydantic-settings>=2.7.1",
+    "pyjwt>=2.10.1",
+    "pyopenssl>=25.0.0",
     "python-dotenv>=1.0.1",
     "requests>=2.32.3",
     "structlog>=25.1.0",

@@ -14,7 +14,6 @@ dependencies = [
     "pydantic-settings>=2.7.1",
     "pyjwt>=2.10.1",
     "pyopenssl>=25.0.0",
-    "python-dotenv>=1.0.1",
     "requests>=2.32.3",
     "structlog>=25.1.0",
 ]

@@ -25,6 +25,7 @@ Before getting started, ensure you have:
 
 - A **Python 3.12** environment.
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) installed for dependency management.
+- [Docker](https://www.docker.com/)
 - An [OpenRouter API Key](https://openrouter.ai/settings/keys).
 
 ## ⚙️ Environment Setup

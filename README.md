@@ -88,6 +88,113 @@ For granular testing, use the following endpoints:
 
   _Tip:_ In interactive mode, type `exit` to quit.
 
+## 🚀 Deploy on TEE
+
+Deploy on a [Confidential Space](https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-overview) using AMD SEV.
+
+### Prerequisites
+
+- **Google Cloud Platform Account:**  
+  Access to the `verifiable-ai-hackathon` project is required.
+
+- **OpenRouter API Key:**  
+  Ensure your [OpenRouter API key](https://openrouter.ai/settings/keys) is in your `.env`.
+
+- **gcloud CLI:**  
+  Install and authenticate the [gcloud CLI](https://cloud.google.com/sdk/docs/install).
+
+### Environment Configuration
+
+1. **Set Environment Variables:**  
+   Update your `.env` file with:
+
+   ```bash
+   TEE_IMAGE_REFERENCE=ghcr.io/flare-research/flare-ai-consensus:main  # Replace with your repo build image
+   INSTANCE_NAME=<PROJECT_NAME-TEAM_NAME>
+   ```
+
+2. **Load Environment Variables:**
+
+   ```bash
+   source .env
+   ```
+
+   > **Reminder:** Run the above command in every new shell session.
+
+3. **Verify the Setup:**
+
+   ```bash
+   echo $TEE_IMAGE_REFERENCE # Expected output: Your repo build image
+   ```
+
+### Deploying to Confidential Space
+
+Run the following command:
+
+```bash
+gcloud compute instances create $INSTANCE_NAME \
+  --project=verifiable-ai-hackathon \
+  --zone=us-central1-d \
+  --machine-type=n2d-standard-2 \
+  --network-interface=network-tier=PREMIUM,nic-type=GVNIC,stack-type=IPV4_ONLY,subnet=default \
+  --metadata=tee-image-reference=$TEE_IMAGE_REFERENCE,\
+tee-container-log-redirect=true,\
+tee-env-OPEN_ROUTER_API_KEY=$OPEN_ROUTER_API_KEY,\
+  --maintenance-policy=MIGRATE \
+  --provisioning-model=STANDARD \
+  --service-account=confidential-sa@verifiable-ai-hackathon.iam.gserviceaccount.com \
+  --scopes=https://www.googleapis.com/auth/cloud-platform \
+  --min-cpu-platform="AMD Milan" \
+  --tags=flare-ai,http-server,https-server \
+  --create-disk=auto-delete=yes,\
+boot=yes,\
+device-name=$INSTANCE_NAME,\
+image=projects/confidential-space-images/global/images/confidential-space-debug-250100,\
+mode=rw,\
+size=11,\
+type=pd-standard \
+  --shielded-secure-boot \
+  --shielded-vtpm \
+  --shielded-integrity-monitoring \
+  --reservation-affinity=any \
+  --confidential-compute-type=SEV
+```
+
+#### Post-deployment
+
+After deployment, you should see an output similar to:
+
+```plaintext
+NAME          ZONE           MACHINE_TYPE    PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP    STATUS
+consensus-team1   us-central1-d  n2d-standard-2               10.128.0.18  34.41.127.200  RUNNING
+```
+
+It may take a few minutes for Confidential Space to complete startup checks.
+You can monitor progress via the [GCP Console](https://console.cloud.google.com/welcome?project=verifiable-ai-hackathon) by clicking **Serial port 1 (console)**.
+When you see a message like:
+
+```plaintext
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+```
+
+the container is ready. Navigate to the external IP of the instance (visible in the GCP Console) to access the Chat UI.
+
+### 🔧 Troubleshooting
+
+If you encounter issues, follow these steps:
+
+1. **Check Logs:**
+
+   ```bash
+   gcloud compute instances get-serial-port-output $INSTANCE_NAME --project=verifiable-ai-hackathon
+   ```
+
+2. **Verify API Key(s):**  
+   Ensure that all API Keys are set correctly (e.g. `OPEN_ROUTER_API_KEY`).
+
+3. **Check Firewall Settings:**  
+   Confirm that your instance is publicly accessible on port `80`.
+
 ## 🔜 Next Steps & Future Directions
 
 - **Security & TEE Integration:**

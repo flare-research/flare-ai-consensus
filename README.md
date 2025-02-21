@@ -95,7 +95,7 @@ Deploy on a [Confidential Space](https://cloud.google.com/confidential-computing
 ### Prerequisites
 
 - **Google Cloud Platform Account:**  
-  Access to the `verifiable-ai-hackathon` project is required.
+  Access to the [`verifiable-ai-hackathon`](https://console.cloud.google.com/welcome?project=verifiable-ai-hackathon) project is required.
 
 - **OpenRouter API Key:**  
   Ensure your [OpenRouter API key](https://openrouter.ai/settings/keys) is in your `.env`.

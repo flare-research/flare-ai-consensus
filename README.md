@@ -19,7 +19,7 @@ Flare AI SDK for Consensus Learning.
 - **Modular & Configurable**
   Easily customize models, conversation prompts, and aggregation parameters through a simple JSON configuration.
 
-## 📌 Prerequisites
+## 🎯 Getting Started
 
 Before getting started, ensure you have:
 
@@ -27,7 +27,7 @@ Before getting started, ensure you have:
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) installed for dependency management.
 - An [OpenRouter API Key](https://openrouter.ai/settings/keys).
 
-## ⚙️ Environment Setup
+### Environment Setup
 
 ### Step 1: Install Dependencies
 
@@ -48,7 +48,7 @@ uv run python -m tests.credits
 uv run python -m tests.models
 ```
 
-## 🚀 Running Consensus Learning
+### Running Consensus Learning
 
 Configure your consensus learning instance in `src/input.json`, including:
 
@@ -70,7 +70,7 @@ Once configured, start the process with:
 uv run start-consensus
 ```
 
-## 🔧 Testing Endpoints
+### Testing Endpoints
 
 For granular testing, use the following endpoints:
 
@@ -87,6 +87,33 @@ For granular testing, use the following endpoints:
   ```
 
   _Tip:_ In interactive mode, type `exit` to quit.
+
+## 📁 Repo Structure
+
+```
+src/flare_ai_consensus/
+├── attestation/           # TEE attestation implementation
+│   ├── __init__.py
+│   ├── simulated_token.txt
+│   ├── vtpm_attestation.py
+│   └── vtpm_validation.py
+├── consensus/             # Core consensus learning
+│   ├── __init__.py
+│   ├── aggregator.py      # Response aggregation
+│   └── consensus.py       # Main CL implementation
+├── router/               # API routing and model access
+│   ├── __init__.py
+│   ├── base_router.py     # Base routing interface
+│   └── openrouter.py      # OpenRouter implementation
+├── utils/                # Utility functions
+│   ├── __init__.py
+│   ├── file_utils.py      # File operations
+│   └── parser_utils.py    # Input parsing
+├── __init__.py
+├── input.json            # Configuration file
+├── main.py               # Application entry
+└── settings.py           # Environment settings
+```
 
 ## 🚀 Deploy on TEE
 
@@ -195,7 +222,7 @@ If you encounter issues, follow these steps:
 3. **Check Firewall Settings:**  
    Confirm that your instance is publicly accessible on port `80`.
 
-## 🔜 Next Steps & Future Directions
+## 💡 Next Steps
 
 - **Security & TEE Integration:**
   - Ensure execution within a Trusted Execution Environment (TEE) to maintain confidentiality and integrity.

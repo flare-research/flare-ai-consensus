@@ -100,6 +100,9 @@ class Settings(BaseSettings):
     data_path: Path = create_path("data")
     input_path: Path = create_path("flare_ai_consensus")
 
+    # Restrict backend listener to specific IPs
+    cors_origins: list[str] = ["*"]
+
     # Consensus Settings
     consensus_config: ConsensusConfig | None = None
 

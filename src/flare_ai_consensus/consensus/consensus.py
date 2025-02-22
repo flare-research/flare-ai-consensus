@@ -2,11 +2,64 @@ import asyncio
 
 import structlog
 
+from flare_ai_consensus.consensus.aggregator import async_centralized_llm_aggregator
 from flare_ai_consensus.router import AsyncOpenRouterProvider, ChatRequest
 from flare_ai_consensus.settings import ConsensusConfig, Message, ModelConfig
 from flare_ai_consensus.utils import parse_chat_response
 
 logger = structlog.get_logger(__name__)
+
+
+async def run_consensus(
+    provider: AsyncOpenRouterProvider,
+    consensus_config: ConsensusConfig,
+    system_message: str,
+    user_message: str,
+) -> str:
+    """
+    Asynchronously runs the consensus learning loop.
+
+    :param provider: An instance of a OpenRouterProvider (used for aggregation).
+    :param async_provider: An instance of an AsyncOpenRouterProvider.
+    :param consensus_config: An instance of ConsensusConfig.
+    """
+    response_data = {}
+    response_data["initial_conversation"] = [
+        {"role": "system", "content": system_message},
+        {"role": "user", "content": user_message},
+    ]
+
+    # Step 1: Initial round.
+    responses = await send_round(provider, consensus_config)
+    aggregated_response = await async_centralized_llm_aggregator(
+        provider, consensus_config.aggregator_config, responses
+    )
+    logger.info(
+        "initial response aggregation complete", aggregated_response=aggregated_response
+    )
+
+    response_data["iteration_0"] = responses
+    response_data["aggregate_0"] = aggregated_response
+
+    # Step 2: Improvement rounds.
+    for i in range(consensus_config.iterations):
+        responses = await send_round(provider, consensus_config, aggregated_response)
+        aggregated_response = await async_centralized_llm_aggregator(
+            provider, consensus_config.aggregator_config, responses
+        )
+        logger.info(
+            "responses aggregated",
+            iteration=i + 1,
+            aggregated_response=aggregated_response,
+        )
+
+        response_data[f"iteration_{i + 1}"] = responses
+        response_data[f"aggregate_{i + 1}"] = aggregated_response
+
+    # Close the async provider to release resources.
+    await provider.close()
+
+    return aggregated_response
 
 
 def _build_improvement_conversation(

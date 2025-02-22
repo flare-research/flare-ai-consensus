@@ -1,73 +1,44 @@
-import asyncio
-
 import structlog
+import uvicorn
+from fastapi import APIRouter, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from flare_ai_consensus.consensus import (
-    async_centralized_llm_aggregator,
-    send_round,
-)
+from flare_ai_consensus.api import ChatRouter
 from flare_ai_consensus.router import AsyncOpenRouterProvider
-from flare_ai_consensus.settings import ConsensusConfig, settings
-from flare_ai_consensus.utils import load_json, save_json
+from flare_ai_consensus.settings import settings
+from flare_ai_consensus.utils import load_json
 
 logger = structlog.get_logger(__name__)
 
 
-async def run_consensus(
-    provider: AsyncOpenRouterProvider,
-    consensus_config: ConsensusConfig,
-) -> None:
+def create_app() -> FastAPI:
     """
-    Asynchronously runs the consensus learning loop.
+    Create and configure the FastAPI application instance.
 
-    :param provider: An instance of a OpenRouterProvider (used for aggregation).
-    :param async_provider: An instance of an AsyncOpenRouterProvider.
-    :param consensus_config: An instance of ConsensusConfig.
+    This function:
+      1. Creates a new FastAPI instance with optional CORS middleware.
+      2. Loads configuration.
+      3. Sets up the OpenRouter client.
+      4. Initializes a ChatRouter that wraps the RAG pipeline.
+      5. Registers the chat endpoint under the /chat prefix.
+
+    Returns:
+        FastAPI: The configured FastAPI application instance.
     """
-    response_data = {}
-    response_data["initial_conversation"] = consensus_config.initial_prompt
-
-    # Step 1: Initial round.
-    responses = await send_round(provider, consensus_config)
-    aggregated_response = await async_centralized_llm_aggregator(
-        provider, consensus_config.aggregator_config, responses
-    )
-    logger.info(
-        "initial response aggregation complete", aggregated_response=aggregated_response
+    app = FastAPI(
+        title="Flare AI Consensus Learning", version="1.0", redirect_slashes=False
     )
 
-    response_data["iteration_0"] = responses
-    response_data["aggregate_0"] = aggregated_response
-
-    # Step 2: Improvement rounds.
-    for i in range(consensus_config.iterations):
-        responses = await send_round(provider, consensus_config, aggregated_response)
-        aggregated_response = await async_centralized_llm_aggregator(
-            provider, consensus_config.aggregator_config, responses
-        )
-        logger.info(
-            "responses aggregated",
-            iteration=i + 1,
-            aggregated_response=aggregated_response,
-        )
-
-        response_data[f"iteration_{i + 1}"] = responses
-        response_data[f"aggregate_{i + 1}"] = aggregated_response
-
-    # Step 3: Save final consensus.
-    output_file = settings.data_path / "final_consensus.json"
-    save_json(
-        response_data,
-        output_file,
+    # Optional: configure CORS middleware using settings.
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
-    logger.info("saved consensus", output_file=output_file)
 
-    # Close the async provider to release resources.
-    await provider.close()
-
-
-def main() -> None:
-    # Load the consensus configuration from input.json
+    # Load input configuration.
     config_json = load_json(settings.input_path / "input.json")
     settings.load_consensus_config(config_json)
 
@@ -76,10 +47,26 @@ def main() -> None:
         api_key=settings.open_router_api_key, base_url=settings.open_router_base_url
     )
 
-    # Run the consensus learning process with synchronous requests.
-    if settings.consensus_config:
-        asyncio.run(run_consensus(provider, settings.consensus_config))
+    # Create an APIRouter for chat endpoints and initialize ChatRouter.
+    chat_router = ChatRouter(
+        router=APIRouter(),
+        provider=provider,
+        consensus_config=settings.consensus_config,
+    )
+    app.include_router(chat_router.router, prefix="/api/routes/chat", tags=["chat"])
+
+    return app
+
+
+app = create_app()
+
+
+def start() -> None:
+    """
+    Start the FastAPI application server.
+    """
+    uvicorn.run(app, host="0.0.0.0", port=8080)  # noqa: S104
 
 
 if __name__ == "__main__":
-    main()
+    start()

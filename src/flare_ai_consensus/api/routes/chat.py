@@ -1,4 +1,3 @@
-import asyncio
 
 import structlog
 from fastapi import APIRouter, HTTPException
@@ -69,10 +68,10 @@ class ChatRouter:
                 self.logger.debug("Received chat message", message=message.user_message)
 
                 answer = await run_consensus(
-                        self.provider,
-                        self.consensus_config,
-                        message.system_message,
-                        message.user_message,
+                    self.provider,
+                    self.consensus_config,
+                    message.system_message,
+                    message.user_message,
                 )
 
             except Exception as e:

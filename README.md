@@ -28,48 +28,62 @@ Before getting started, ensure you have:
 - [Docker](https://www.docker.com/)
 - An [OpenRouter API Key](https://openrouter.ai/settings/keys).
 
-### Environment Setup
+### Build & Run Instructions
 
-### Step 1: Install Dependencies
+You can deploy Flare AI RAG using Docker or set up the backend and frontend manually.
 
-Install all required dependencies by running:
+#### Environment Setup
 
-```bash
-uv sync --all-extras
-```
+1. **Prepare the Environment File:**
+   Rename `.env.example` to `.env` and update the variables accordingly. (e.g. your [OpenRouter API Key](https://openrouter.ai/keys))
 
-### Step 2: Configure Environment Variables
+### Build using Docker (Recommended) -- [WIP]
 
-Rename `.env.example` to `.env` and add in the variables (e.g. your [OpenRouter API Key](https://openrouter.ai/keys))
+1. **Build the Docker Image:**
 
-Verify your available credits and get all supported models with:
+   ```bash
+   docker build -t flare-ai-rag .
+   ```
 
-```bash
-uv run python -m tests.credits
-uv run python -m tests.models
-```
+2. **Run the Docker Container:**
 
-### Running Consensus Learning
+   ```bash
+   docker run -p 80:80 -it --env-file .env flare-ai-rag
+   ```
 
-Configure your consensus learning instance in `src/input.json`, including:
+3. **Access the Frontend:**
+   Open your browser and navigate to [http://localhost:80](http://localhost:80) to interact with the Chat UI.
 
-- **Models:**
-  Specify each LLM's OpenRouter `id`, along with parameters like `max_tokens` and `temperature`.
+### 🛠 Build Manually
 
-- **Initial Conversation:**
-  Set up the conversation context (e.g., a `system` message and an initial `user` query).
+Flare AI Consensus is a Python-based backend. Follow these steps for manual setup:
 
-- **Aggregator Settings:**
-  Define the aggregator model, additional context, aggregation prompt, and specify how aggregated responses are handled.
+1. **Install Dependencies:**
+   Use [uv](https://docs.astral.sh/uv/getting-started/installation/) to install backend dependencies:
 
-- **Iterations:**
-  Determine the number of iterations for the feedback loop.
+   ```bash
+   uv sync --all-extras
+   ```
 
-Once configured, start the process with:
+   Verify your available credits and get all supported models with:
 
-```bash
-uv run start-consensus
-```
+   ```bash
+   uv run python -m tests.credits
+   uv run python -m tests.models
+   ```
+
+2. **Configure CL instance:**
+   Configure your CL instance in `src/input.json`, including:
+   - **Models:** Specify each LLM's OpenRouter `id`, along with parameters like `max_tokens` and `temperature`.
+   - **Aggregator Settings:** Define the aggregator model, additional context, aggregation prompt, and specify how aggregated responses are handled.
+   - **Iterations:** Determine the number of iterations for the feedback loop.
+
+3. **Start the Backend:**
+   The backend runs by default on `0.0.0.0:8080`:
+
+   ```bash
+   uv run start-backend
+   ```
 
 ### Testing Endpoints
 
@@ -94,23 +108,21 @@ For granular testing, use the following endpoints:
 ```
 src/flare_ai_consensus/
 ├── attestation/           # TEE attestation implementation
-│   ├── __init__.py
 │   ├── simulated_token.txt
 │   ├── vtpm_attestation.py
 │   └── vtpm_validation.py
+├── api/                    # API layer
+│   ├── middleware/        # Request/response middleware
+│   └── routes/           # API endpoint definitions
 ├── consensus/             # Core consensus learning
-│   ├── __init__.py
 │   ├── aggregator.py      # Response aggregation
 │   └── consensus.py       # Main CL implementation
 ├── router/               # API routing and model access
-│   ├── __init__.py
 │   ├── base_router.py     # Base routing interface
 │   └── openrouter.py      # OpenRouter implementation
 ├── utils/                # Utility functions
-│   ├── __init__.py
 │   ├── file_utils.py      # File operations
 │   └── parser_utils.py    # Input parsing
-├── __init__.py
 ├── input.json            # Configuration file
 ├── main.py               # Application entry
 └── settings.py           # Environment settings

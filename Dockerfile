@@ -14,7 +14,9 @@ COPY --from=backend-builder /flare-ai-consensus/pyproject.toml .
 COPY --from=backend-builder /flare-ai-consensus/README.md .
 
 # Allow workload operator to override environment variables
-LABEL "tee.launch_policy.allow_env_override"="OPENROUTER_API_KEY"
+LABEL "tee.launch_policy.allow_env_override"="OPEN_ROUTER_API_KEY"
 LABEL "tee.launch_policy.log_redirect"="always"
 
-CMD ["uv", "run", "start-consensus"]
+EXPOSE 80
+
+CMD ["uv", "run", "start-backend"]

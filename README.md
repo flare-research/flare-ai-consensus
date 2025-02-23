@@ -52,7 +52,7 @@ You can deploy Flare AI RAG using Docker or set up the backend and frontend manu
    ```
 
 3. **Access the Frontend:**
-   Open your browser and navigate to [http://localhost:80](http://localhost:80) to interact with the Chat UI.
+   Open your browser and navigate to [http://localhost:80/docs](http://localhost:80/docs) to interact with the Chat UI.
 
 ### 🛠 Build Manually
 
@@ -174,7 +174,7 @@ Run the following command:
 ```bash
 gcloud compute instances create $INSTANCE_NAME \
   --project=verifiable-ai-hackathon \
-  --zone=us-central1-d \
+  --zone=us-central1-c \
   --machine-type=n2d-standard-2 \
   --network-interface=network-tier=PREMIUM,nic-type=GVNIC,stack-type=IPV4_ONLY,subnet=default \
   --metadata=tee-image-reference=$TEE_IMAGE_REFERENCE,\
@@ -202,22 +202,23 @@ type=pd-standard \
 
 #### Post-deployment
 
-After deployment, you should see an output similar to:
+1. After deployment, you should see an output similar to:
 
-```plaintext
-NAME          ZONE           MACHINE_TYPE    PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP    STATUS
-consensus-team1   us-central1-d  n2d-standard-2               10.128.0.18  34.41.127.200  RUNNING
-```
+   ```plaintext
+   NAME          ZONE           MACHINE_TYPE    PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP    STATUS
+   rag-team1   us-central1-b  n2d-standard-2               10.128.0.18  34.41.127.200  RUNNING
+   ```
 
-It may take a few minutes for Confidential Space to complete startup checks.
-You can monitor progress via the [GCP Console](https://console.cloud.google.com/welcome?project=verifiable-ai-hackathon) by clicking **Serial port 1 (console)**.
-When you see a message like:
+2. It may take a few minutes for Confidential Space to complete startup checks. You can monitor progress via the [GCP Console](https://console.cloud.google.com/welcome?project=verifiable-ai-hackathon) logs.
+   Click on **Compute Engine** → **VM Instances** (in the sidebar) → **Select your instance** → **Serial port 1 (console)**.
 
-```plaintext
-INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
-```
+   When you see a message like:
 
-the container is ready. Navigate to the external IP of the instance (visible in the GCP Console) to access the Chat UI.
+   ```plaintext
+   INFO:     Uvicorn running on http://0.0.0.0:80 (Press CTRL+C to quit)
+   ```
+
+   the container is ready. Navigate to the external IP of the instance (visible in the **VM Instances** page) to access the docs (`<IP>:80/docs`).
 
 ### 🔧 Troubleshooting
 

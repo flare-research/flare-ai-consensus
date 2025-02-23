@@ -37,7 +37,7 @@ You can deploy Flare AI RAG using Docker or set up the backend and frontend manu
 1. **Prepare the Environment File:**
    Rename `.env.example` to `.env` and update the variables accordingly. (e.g. your [OpenRouter API Key](https://openrouter.ai/keys))
 
-### Build using Docker (Recommended) -- [WIP]
+### Build using Docker (Recommended)
 
 1. **Build the Docker Image:**
 

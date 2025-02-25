@@ -13,24 +13,25 @@ logger = structlog.get_logger(__name__)
 async def run_consensus(
     provider: AsyncOpenRouterProvider,
     consensus_config: ConsensusConfig,
-    system_message: str,
-    user_message: str,
+    initial_conversation: list[Message],
 ) -> str:
     """
     Asynchronously runs the consensus learning loop.
 
-    :param provider: An instance of a OpenRouterProvider (used for aggregation).
-    :param async_provider: An instance of an AsyncOpenRouterProvider.
+    :param provider: An instance of an AsyncOpenRouterProvider.
     :param consensus_config: An instance of ConsensusConfig.
+    :param initial_conversation: the input user prompt with system instructions.
+
+    Returns: aggregated response (str)
+    All responses are stored in response_data and can be returned for future use.
     """
     response_data = {}
-    response_data["initial_conversation"] = [
-        {"role": "system", "content": system_message},
-        {"role": "user", "content": user_message},
-    ]
+    response_data["initial_conversation"] = initial_conversation
 
     # Step 1: Initial round.
-    responses = await send_round(provider, consensus_config)
+    responses = await send_round(
+        provider, consensus_config, response_data["initial_conversation"]
+    )
     aggregated_response = await async_centralized_llm_aggregator(
         provider, consensus_config.aggregator_config, responses
     )
@@ -43,7 +44,9 @@ async def run_consensus(
 
     # Step 2: Improvement rounds.
     for i in range(consensus_config.iterations):
-        responses = await send_round(provider, consensus_config, aggregated_response)
+        responses = await send_round(
+            provider, consensus_config, initial_conversation, aggregated_response
+        )
         aggregated_response = await async_centralized_llm_aggregator(
             provider, consensus_config.aggregator_config, responses
         )
@@ -63,15 +66,18 @@ async def run_consensus(
 
 
 def _build_improvement_conversation(
-    consensus_config: ConsensusConfig, aggregated_response: str
+    consensus_config: ConsensusConfig,
+    initial_conversation: list[Message],
+    aggregated_response: str,
 ) -> list[Message]:
     """Build an updated conversation using the consensus configuration.
 
     :param consensus_config: An instance of ConsensusConfig.
+    :param initial_conversation: the input user prompt with system instructions.
     :param aggregated_response: The aggregated consensus response.
     :return: A list of messages for the updated conversation.
     """
-    conversation = consensus_config.initial_prompt.copy()
+    conversation = initial_conversation.copy()
 
     # Add aggregated response
     conversation.append(
@@ -92,6 +98,7 @@ async def _get_response_for_model(
     provider: AsyncOpenRouterProvider,
     consensus_config: ConsensusConfig,
     model: ModelConfig,
+    initial_conversation: list[Message],
     aggregated_response: str | None,
 ) -> tuple[str | None, str]:
     """
@@ -99,19 +106,20 @@ async def _get_response_for_model(
 
     :param provider: An instance of an asynchronous OpenRouter provider.
     :param consensus_config: An instance of ConsensusConfig.
+    :param model: A ModelConfig instance.
+    :param initial_conversation: the input user prompt with system instructions.
     :param aggregated_response: The aggregated consensus response
         from the previous round (or None).
-    :param model: A ModelConfig instance.
     :return: A tuple of (model_id, response text).
     """
     if not aggregated_response:
         # Use initial prompt for the first round.
-        conversation = consensus_config.initial_prompt
+        conversation = initial_conversation
         logger.info("sending initial prompt", model_id=model.model_id)
     else:
         # Build the improvement conversation.
         conversation = _build_improvement_conversation(
-            consensus_config, aggregated_response
+            consensus_config, initial_conversation, aggregated_response
         )
         logger.info("sending improvement prompt", model_id=model.model_id)
 
@@ -130,6 +138,7 @@ async def _get_response_for_model(
 async def send_round(
     provider: AsyncOpenRouterProvider,
     consensus_config: ConsensusConfig,
+    initial_conversation: list[Message],
     aggregated_response: str | None = None,
 ) -> dict:
     """
@@ -137,12 +146,15 @@ async def send_round(
 
     :param provider: An instance of an asynchronous OpenRouter provider.
     :param consensus_config: An instance of ConsensusConfig.
+    :param initial_conversation: the input user prompt with system instructions.
     :param aggregated_response: The aggregated consensus response from the
         previous round (or None).
     :return: A dictionary mapping model IDs to their response texts.
     """
     tasks = [
-        _get_response_for_model(provider, consensus_config, model, aggregated_response)
+        _get_response_for_model(
+            provider, consensus_config, model, initial_conversation, aggregated_response
+        )
         for model in consensus_config.models
     ]
     results = await asyncio.gather(*tasks)

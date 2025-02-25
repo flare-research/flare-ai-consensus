@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 
 from flare_ai_consensus.consensus import run_consensus
 from flare_ai_consensus.router import AsyncOpenRouterProvider
-from flare_ai_consensus.settings import ConsensusConfig
+from flare_ai_consensus.settings import ConsensusConfig, Message
 
 logger = structlog.get_logger(__name__)
 router = APIRouter()
@@ -24,10 +24,7 @@ class ChatMessage(BaseModel):
 
 class ChatRouter:
     """
-    A simple chat router that processes incoming messages using the RAG pipeline.
-
-    It wraps the existing query classification, document retrieval, and response
-    generation components to handle a conversation in a single endpoint.
+    A simple chat router that processes incoming messages using the CL pipeline.
     """
 
     def __init__(
@@ -41,9 +38,8 @@ class ChatRouter:
 
         Args:
             router (APIRouter): FastAPI router to attach endpoints.
-            query_router: Component that classifies the query.
-            retriever: Component that retrieves relevant documents.
-            responder: Component that generates a response.
+            provider: instance of an async OpenRouter client.
+            consensus_config: config for running the consensus algorithm.
         """
         self._router = router
         self.provider = provider
@@ -60,17 +56,22 @@ class ChatRouter:
         @self._router.post("/")
         async def chat(message: ChatMessage) -> dict[str, str] | None:  # pyright: ignore [reportUnusedFunction]
             """
-            Process a chat message through the RAG pipeline.
-            Returns a response containing the query classification and the answer.
+            Process a chat message through the CL pipeline.
+            Returns an aggregated response after a number of iterations.
             """
             try:
                 self.logger.debug("Received chat message", message=message.user_message)
+                # Build initial conversation
+                initial_conversation: list[Message] = [
+                    {"role": "system", "content": message.system_message},
+                    {"role": "user", "content": message.user_message},
+                ]
 
+                # Run consensus algorithm
                 answer = await run_consensus(
                     self.provider,
                     self.consensus_config,
-                    message.system_message,
-                    message.user_message,
+                    initial_conversation,
                 )
 
             except Exception as e:

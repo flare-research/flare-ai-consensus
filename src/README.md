@@ -19,10 +19,10 @@ Every message sent to the **Chat Completion** endpoint must specify one of the f
 * `user`: Contains the queries or instructions directed to the model.
 * `assistant`: Represents the model’s responses. Any message with this role is treated as a previous response from the model.
 
-For the consensus learning algorithm, messages are sent to the LLMs via OpenRouter and are constructed.
+For the consensus learning algorithm, messages are sent to the LLMs via OpenRouter.
 Standard (*i.e.* non-aggregated) messages are sent using the `send_round()` method in `consensus/consensus.py`:
 
-* **Initial messages** (first round messages): These consist of the `initial_conversation` defined within `input.json`.
+* **Initial messages** (first round messages): These consist of a `user` query with possibly additional `system` instructions.
 * **Follow-up conversations**: Built using the `build_improvement_conversation()` method and contain include:
   * The initial conversation defined within `input.json`.
   * The aggregated prompt from the aggregator, with the role assigned in the `aggregated_prompt_type` field of `input.json`.

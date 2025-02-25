@@ -42,7 +42,6 @@ class ConsensusConfig(BaseModel):
 
     models: list[ModelConfig]
     aggregator_config: AggregatorConfig
-    initial_prompt: list[Message]
     improvement_prompt: str
     iterations: int
     aggregated_prompt_type: Literal["user", "assistant", "system"]
@@ -79,7 +78,6 @@ class ConsensusConfig(BaseModel):
         return cls(
             models=models,
             aggregator_config=aggregator_config,
-            initial_prompt=json_data.get("initial_conversation", []),
             improvement_prompt=json_data.get("improvement_prompt", ""),
             iterations=json_data.get("iterations", 1),
             aggregated_prompt_type=json_data.get("aggregated_prompt_type", "system"),

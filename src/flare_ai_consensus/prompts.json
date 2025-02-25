@@ -1,0 +1,12 @@
+{
+    "example_conversation_1": [
+        {
+            "role": "system",
+            "content": "You are an expert mathematician. For every math problem, provide a detailed, step-by-step explanation of your reasoning and calculations, clearly showing all work and intermediate steps. Ensure that your final answer is clearly stated and justified."
+        },
+        {
+            "role": "user",
+            "content": "Tom tells me that one of his two children is a girl. What is the probability that his other child is also a girl?"
+        }
+    ]
+}

@@ -165,7 +165,7 @@ cython_debug/
 *.pdf
 *.svg
 # *.jpeg
-*.png
+# *.png
 *.bmp
 
 ### VirtualEnv template

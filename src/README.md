@@ -3,6 +3,19 @@
 
 # Flare AI Consensus
 
+## flare-ai-consensus Pipeline
+
+The flare-ai-consensus template consists of the following components:
+
+* **Router:** The primary interface that receives user requests, distributes them to the various AI models, and collects their intermediate responses.
+* **Aggregator:** synthesizes multiple model responses into a single, coherent output.
+* **Consensus Layer:** Defines logic for the consensus algorithm. The reference implementation is setup in the following steps:
+  * The initial prompt is sent to a set of models, with additional system instructions.
+  * Initial responses are aggregated by the Aggregator.
+  * Improvement rounds follow up where aggregated responses are sent as additional context or system instructions to the models.
+
+<img width="500" alt="flare-ai-consensus" src="./cl_pipeline.png" />
+
 ## OpenRouter Clients
 
 We implement two OpenRouter clients for interacting with the OpenRouter API: a standard sync client and an asynchronous client.

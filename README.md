@@ -30,7 +30,7 @@ Before getting started, ensure you have:
 
 ### Build & Run Instructions
 
-You can deploy Flare AI RAG using Docker or set up the backend and frontend manually.
+You can deploy Flare AI Consensus using Docker or set up the backend and frontend manually.
 
 #### Environment Setup
 
@@ -42,13 +42,13 @@ You can deploy Flare AI RAG using Docker or set up the backend and frontend manu
 1. **Build the Docker Image:**
 
    ```bash
-   docker build -t flare-ai-rag .
+   docker build -t flare-ai-consensus .
    ```
 
 2. **Run the Docker Container:**
 
    ```bash
-   docker run -p 80:80 -it --env-file .env flare-ai-rag
+   docker run -p 80:80 -it --env-file .env flare-ai-consensus
    ```
 
 3. **Access the Frontend:**
@@ -206,7 +206,7 @@ type=pd-standard \
 
    ```plaintext
    NAME          ZONE           MACHINE_TYPE    PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP    STATUS
-   rag-team1   us-central1-b  n2d-standard-2               10.128.0.18  34.41.127.200  RUNNING
+   consensus-team1   us-central1-b  n2d-standard-2               10.128.0.18  34.41.127.200  RUNNING
    ```
 
 2. It may take a few minutes for Confidential Space to complete startup checks. You can monitor progress via the [GCP Console](https://console.cloud.google.com/welcome?project=verifiable-ai-hackathon) logs.

@@ -74,6 +74,7 @@ Flare AI Consensus is a Python-based backend. Follow these steps for manual setu
 
 2. **Configure CL instance:**
    Configure your CL instance in `src/input.json`, including:
+
    - **Models:** Specify each LLM's OpenRouter `id`, along with parameters like `max_tokens` and `temperature`.
    - **Aggregator Settings:** Define the aggregator model, additional context, aggregation prompt, and specify how aggregated responses are handled.
    - **Iterations:** Determine the number of iterations for the feedback loop.
@@ -174,7 +175,7 @@ Run the following command:
 ```bash
 gcloud compute instances create $INSTANCE_NAME \
   --project=verifiable-ai-hackathon \
-  --zone=us-central1-c \
+  --zone=us-south1-a \
   --machine-type=n2d-standard-2 \
   --network-interface=network-tier=PREMIUM,nic-type=GVNIC,stack-type=IPV4_ONLY,subnet=default \
   --metadata=tee-image-reference=$TEE_IMAGE_REFERENCE,\

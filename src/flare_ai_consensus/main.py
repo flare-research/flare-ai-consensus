@@ -4,7 +4,6 @@ from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from flare_ai_consensus.api import ChatRouter
-from flare_ai_consensus.router import AsyncOpenRouterProvider
 from flare_ai_consensus.settings import settings
 from flare_ai_consensus.utils import load_json
 
@@ -18,7 +17,7 @@ def create_app() -> FastAPI:
     This function:
       1. Creates a new FastAPI instance with optional CORS middleware.
       2. Loads configuration.
-      3. Sets up the OpenRouter client.
+      3. Sets up the chat router with API key information.
       4. Initializes a ChatRouter that wraps the RAG pipeline.
       5. Registers the chat endpoint under the /chat prefix.
 
@@ -42,15 +41,12 @@ def create_app() -> FastAPI:
     config_json = load_json(settings.input_path / "input.json")
     settings.load_consensus_config(config_json)
 
-    # Initialize the OpenRouter provider.
-    provider = AsyncOpenRouterProvider(
-        api_key=settings.open_router_api_key, base_url=settings.open_router_base_url
-    )
-
     # Create an APIRouter for chat endpoints and initialize ChatRouter.
+    # Instead of passing a provider, pass the API key and base URL
     chat_router = ChatRouter(
         router=APIRouter(),
-        provider=provider,
+        api_key=settings.open_router_api_key,
+        base_url=settings.open_router_base_url,
         consensus_config=settings.consensus_config,
     )
     app.include_router(chat_router.router, prefix="/api/routes/chat", tags=["chat"])

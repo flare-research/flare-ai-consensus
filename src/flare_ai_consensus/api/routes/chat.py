@@ -30,7 +30,8 @@ class ChatRouter:
     def __init__(
         self,
         router: APIRouter,
-        provider: AsyncOpenRouterProvider,
+        api_key: str,
+        base_url: str = "https://openrouter.ai/api/v1",
         consensus_config: ConsensusConfig | None = None,
     ) -> None:
         """
@@ -38,11 +39,13 @@ class ChatRouter:
 
         Args:
             router (APIRouter): FastAPI router to attach endpoints.
-            provider: instance of an async OpenRouter client.
+            api_key: API key for OpenRouter.
+            base_url: Base URL for OpenRouter API.
             consensus_config: config for running the consensus algorithm.
         """
         self._router = router
-        self.provider = provider
+        self.api_key = api_key
+        self.base_url = base_url
         if consensus_config:
             self.consensus_config = consensus_config
         self.logger = logger.bind(router="chat")
@@ -59,6 +62,11 @@ class ChatRouter:
             Process a chat message through the CL pipeline.
             Returns an aggregated response after a number of iterations.
             """
+            # Create a new provider for each request
+            provider = AsyncOpenRouterProvider(
+                api_key=self.api_key, base_url=self.base_url
+            )
+
             try:
                 self.logger.debug("Received chat message", message=message.user_message)
                 # Build initial conversation
@@ -69,13 +77,15 @@ class ChatRouter:
 
                 # Run consensus algorithm
                 answer = await run_consensus(
-                    self.provider,
+                    provider,
                     self.consensus_config,
                     initial_conversation,
                 )
 
             except Exception as e:
                 self.logger.exception("Chat processing failed", error=str(e))
+                # Make sure to close the provider even if an exception occurs
+                await provider.close()
                 raise HTTPException(status_code=500, detail=str(e)) from e
             else:
                 self.logger.info("Response generated", answer=answer)

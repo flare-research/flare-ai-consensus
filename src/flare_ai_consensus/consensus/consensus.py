@@ -59,9 +59,6 @@ async def run_consensus(
         response_data[f"iteration_{i + 1}"] = responses
         response_data[f"aggregate_{i + 1}"] = aggregated_response
 
-    # Close the async provider to release resources.
-    await provider.close()
-
     return aggregated_response
 
 
